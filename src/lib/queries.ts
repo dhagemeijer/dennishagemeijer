@@ -283,3 +283,26 @@ export function subcollectionPhotoCountsQuery(collectionId: string) {
     },
   });
 }
+
+export type SearchIndex = {
+  collections: Collection[];
+  subcollections: Subcollection[];
+  photos: Photo[];
+};
+
+/** Everything needed for keyword/title search and the admin keyword overview. */
+export const searchIndexQuery = queryOptions({
+  queryKey: ["search-index"],
+  queryFn: async (): Promise<SearchIndex> => {
+    const [collections, subcollections, photos] = await Promise.all([
+      supabase.from("collections").select("*").order("sort_order", { ascending: true }),
+      supabase.from("subcollections").select("*").order("sort_order", { ascending: true }),
+      supabase.from("photos").select("*").order("created_at", { ascending: false }),
+    ]);
+    return {
+      collections: unwrap<Collection[]>(collections),
+      subcollections: unwrap<Subcollection[]>(subcollections),
+      photos: unwrap<Photo[]>(photos),
+    };
+  },
+});
