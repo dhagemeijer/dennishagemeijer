@@ -60,6 +60,7 @@ export const Route = createFileRoute("/collecties/$slug/$sub")({
 function SubcollectionDetail() {
   const { collection, subcollection } = Route.useLoaderData();
   const { data: photos } = useSuspenseQuery(subcollectionPhotosQuery(subcollection.id));
+  const teams = matchLabel(subcollection);
 
   return (
     <div className="pb-8">
@@ -73,7 +74,11 @@ function SubcollectionDetail() {
         </Link>
       </div>
       <PageHeader
-        eyebrow={subcollection.event_date ? formatDateNl(subcollection.event_date) : collection.name}
+        eyebrow={
+          [teams, subcollection.event_date ? formatDateNl(subcollection.event_date) : null]
+            .filter(Boolean)
+            .join(" · ") || collection.name
+        }
         title={subcollection.name}
         description={subcollection.description || undefined}
       />
@@ -83,3 +88,4 @@ function SubcollectionDetail() {
     </div>
   );
 }
+
