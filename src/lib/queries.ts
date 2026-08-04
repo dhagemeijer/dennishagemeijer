@@ -53,6 +53,7 @@ export type NewsPost = {
   title: string;
   body: string;
   published_at: string;
+  image_path: string | null;
   created_at: string;
 };
 
