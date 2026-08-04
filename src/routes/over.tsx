@@ -93,7 +93,7 @@ function AboutPage() {
       ) : null}
 
       {isAdmin && editing ? (
-        <div className="page-shell mb-12 space-y-6 border border-border p-6">
+        <div className="page-shell mb-12 space-y-6 rounded-xl border border-border bg-card p-8">
           <ImageUploadField
             label="Portretfoto"
             value={imagePath}
@@ -120,8 +120,8 @@ function AboutPage() {
         </div>
       ) : null}
 
-      <div className="page-shell grid gap-12 md:grid-cols-[2fr_3fr] md:items-start">
-        <div className="aspect-[4/5] overflow-hidden bg-muted">
+      <div className="page-shell grid gap-16 md:grid-cols-[2fr_3fr] md:items-start lg:gap-24">
+        <div className="aspect-[4/5] overflow-hidden bg-card">
           {displayImage ? (
             <img
               src={displayImage}
@@ -131,7 +131,7 @@ function AboutPage() {
             />
           ) : null}
         </div>
-        <div className="space-y-6 text-base leading-relaxed text-muted-foreground">
+        <div className="space-y-8 text-base leading-loose text-muted-foreground">
           {paragraphs.map((paragraph, index) => (
             <p key={index} className="whitespace-pre-line">
               {paragraph}

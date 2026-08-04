@@ -44,7 +44,7 @@ export const Route = createFileRoute("/collecties/$slug/$sub")({
   },
   notFoundComponent: () => (
     <div className="page-shell py-24">
-      <h1 className="font-display text-2xl font-semibold">Niet gevonden</h1>
+      <h1 className="font-display text-3xl">Niet gevonden</h1>
       <Link to="/collecties" className="mt-4 inline-block text-sm text-primary">
         Terug naar collecties
       </Link>
@@ -65,11 +65,11 @@ function SubcollectionDetail() {
 
   return (
     <div className="pb-8">
-      <div className="page-shell pt-10">
+      <div className="page-shell pt-12">
         <Link
           to="/collecties/$slug"
           params={{ slug: collection.slug }}
-          className="text-xs tracking-wider text-muted-foreground uppercase hover:text-primary"
+          className="text-[0.6875rem] tracking-[0.22em] text-muted-foreground uppercase transition-colors duration-300 hover:text-primary"
         >
           ← {collection.name}
         </Link>

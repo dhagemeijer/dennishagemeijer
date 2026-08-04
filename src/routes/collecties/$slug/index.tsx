@@ -46,7 +46,7 @@ export const Route = createFileRoute("/collecties/$slug/")({
   },
   notFoundComponent: () => (
     <div className="page-shell py-24">
-      <h1 className="font-display text-2xl font-semibold">Collectie niet gevonden</h1>
+      <h1 className="font-display text-3xl">Collectie niet gevonden</h1>
       <Link to="/collecties" className="mt-4 inline-block text-sm text-primary">
         Terug naar collecties
       </Link>
@@ -71,8 +71,8 @@ function CollectionDetail() {
 
   return (
     <div className="pb-8">
-      <div className="page-shell pt-10">
-        <Link to="/collecties" className="text-xs tracking-wider text-muted-foreground uppercase hover:text-primary">
+      <div className="page-shell pt-12">
+        <Link to="/collecties" className="text-[0.6875rem] tracking-[0.22em] text-muted-foreground uppercase transition-colors duration-300 hover:text-primary">
           ← Collecties
         </Link>
       </div>
@@ -82,10 +82,10 @@ function CollectionDetail() {
         description={collection.description || undefined}
       />
 
-      <div className="page-shell space-y-16">
+      <div className="page-shell space-y-24">
         {hasSubcollections ? (
           <section>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
               {subcollections.map((sub) => {
                 const cover = photoUrl(sub.cover_photo_url);
                 const teams = matchLabel(sub);
@@ -97,27 +97,27 @@ function CollectionDetail() {
                     params={{ slug: collection.slug, sub: sub.slug }}
                     className="group block"
                   >
-                    <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                    <div className="relative aspect-[4/3] overflow-hidden bg-card">
                       {cover ? (
                         <img
                           src={cover}
                           alt={sub.name}
                           loading="lazy"
-                          className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="size-full object-cover opacity-90 transition-all duration-[350ms] ease-out group-hover:scale-[1.02] group-hover:opacity-100"
                         />
                       ) : (
-                        <div className="flex size-full items-center justify-center text-xs text-muted-foreground">
+                        <div className="flex size-full items-center justify-center text-[0.6875rem] tracking-[0.18em] text-muted-foreground uppercase">
                           Geen omslagfoto
                         </div>
                       )}
                     </div>
-                    <h3 className="mt-4 font-display text-lg font-semibold group-hover:text-primary">
+                    <h3 className="mt-6 font-display text-2xl transition-colors duration-300 group-hover:text-primary">
                       {sub.name}
                     </h3>
                     {teams ? (
-                      <p className="mt-1 text-sm font-medium text-foreground">{teams}</p>
+                      <p className="mt-2 text-sm text-muted-foreground">{teams}</p>
                     ) : null}
-                    <p className="mt-1 text-xs tracking-wider text-muted-foreground uppercase">
+                    <p className="mt-2 text-[0.6875rem] tracking-[0.18em] text-muted-foreground/70 uppercase">
                       {[
                         sub.event_date ? formatDateNl(sub.event_date) : null,
                         `${count} ${count === 1 ? "foto" : "foto's"}`,
