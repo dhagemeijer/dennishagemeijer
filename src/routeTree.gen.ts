@@ -10,33 +10,174 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as OverRouteImport } from './routes/over'
+import { Route as CollectiesIndexRouteImport } from './routes/collecties/index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as CollectiesSlugIndexRouteImport } from './routes/collecties/$slug/index'
+import { Route as CollectiesSlugSubRouteImport } from './routes/collecties/$slug/$sub'
+import { Route as AuthenticatedAdminCollectieIdRouteImport } from './routes/_authenticated/admin/collectie.$id'
+import { Route as AuthenticatedAdminSubcollectieIdRouteImport } from './routes/_authenticated/admin/subcollectie.$id'
+import { Route as ApiPublicImgSplatRouteImport } from './routes/api/public/img/$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OverRoute = OverRouteImport.update({
+  id: '/over',
+  path: '/over',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectiesIndexRoute = CollectiesIndexRouteImport.update({
+  id: '/collecties/',
+  path: '/collecties/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const CollectiesSlugIndexRoute = CollectiesSlugIndexRouteImport.update({
+  id: '/collecties/$slug/',
+  path: '/collecties/$slug/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectiesSlugSubRoute = CollectiesSlugSubRouteImport.update({
+  id: '/collecties/$slug/$sub',
+  path: '/collecties/$slug/$sub',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminCollectieIdRoute =
+  AuthenticatedAdminCollectieIdRouteImport.update({
+    id: '/admin/collectie/$id',
+    path: '/admin/collectie/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminSubcollectieIdRoute =
+  AuthenticatedAdminSubcollectieIdRouteImport.update({
+    id: '/admin/subcollectie/$id',
+    path: '/admin/subcollectie/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const ApiPublicImgSplatRoute = ApiPublicImgSplatRouteImport.update({
+  id: '/api/public/img/$',
+  path: '/api/public/img/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
+  '/over': typeof OverRoute
+  '/collecties/': typeof CollectiesIndexRoute
+  '/collecties/$slug/$sub': typeof CollectiesSlugSubRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/collecties/$slug/': typeof CollectiesSlugIndexRoute
+  '/admin/collectie/$id': typeof AuthenticatedAdminCollectieIdRoute
+  '/admin/subcollectie/$id': typeof AuthenticatedAdminSubcollectieIdRoute
+  '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
+  '/over': typeof OverRoute
+  '/collecties': typeof CollectiesIndexRoute
+  '/collecties/$slug/$sub': typeof CollectiesSlugSubRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/collecties/$slug': typeof CollectiesSlugIndexRoute
+  '/admin/collectie/$id': typeof AuthenticatedAdminCollectieIdRoute
+  '/admin/subcollectie/$id': typeof AuthenticatedAdminSubcollectieIdRoute
+  '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/contact': typeof ContactRoute
+  '/over': typeof OverRoute
+  '/collecties/': typeof CollectiesIndexRoute
+  '/collecties/$slug/$sub': typeof CollectiesSlugSubRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/collecties/$slug/': typeof CollectiesSlugIndexRoute
+  '/_authenticated/admin/collectie/$id': typeof AuthenticatedAdminCollectieIdRoute
+  '/_authenticated/admin/subcollectie/$id': typeof AuthenticatedAdminSubcollectieIdRoute
+  '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/contact'
+    | '/over'
+    | '/collecties/'
+    | '/collecties/$slug/$sub'
+    | '/admin/'
+    | '/collecties/$slug/'
+    | '/admin/collectie/$id'
+    | '/admin/subcollectie/$id'
+    | '/api/public/img/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/contact'
+    | '/over'
+    | '/collecties'
+    | '/collecties/$slug/$sub'
+    | '/admin'
+    | '/collecties/$slug'
+    | '/admin/collectie/$id'
+    | '/admin/subcollectie/$id'
+    | '/api/public/img/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/contact'
+    | '/over'
+    | '/collecties/'
+    | '/collecties/$slug/$sub'
+    | '/_authenticated/admin/'
+    | '/collecties/$slug/'
+    | '/_authenticated/admin/collectie/$id'
+    | '/_authenticated/admin/subcollectie/$id'
+    | '/api/public/img/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ContactRoute: typeof ContactRoute
+  OverRoute: typeof OverRoute
+  CollectiesIndexRoute: typeof CollectiesIndexRoute
+  CollectiesSlugSubRoute: typeof CollectiesSlugSubRoute
+  CollectiesSlugIndexRoute: typeof CollectiesSlugIndexRoute
+  ApiPublicImgSplatRoute: typeof ApiPublicImgSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +189,112 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/over': {
+      id: '/over'
+      path: '/over'
+      fullPath: '/over'
+      preLoaderRoute: typeof OverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collecties/': {
+      id: '/collecties/'
+      path: '/collecties'
+      fullPath: '/collecties/'
+      preLoaderRoute: typeof CollectiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/collecties/$slug/': {
+      id: '/collecties/$slug/'
+      path: '/collecties/$slug'
+      fullPath: '/collecties/$slug/'
+      preLoaderRoute: typeof CollectiesSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collecties/$slug/$sub': {
+      id: '/collecties/$slug/$sub'
+      path: '/collecties/$slug/$sub'
+      fullPath: '/collecties/$slug/$sub'
+      preLoaderRoute: typeof CollectiesSlugSubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/collectie/$id': {
+      id: '/_authenticated/admin/collectie/$id'
+      path: '/admin/collectie/$id'
+      fullPath: '/admin/collectie/$id'
+      preLoaderRoute: typeof AuthenticatedAdminCollectieIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/subcollectie/$id': {
+      id: '/_authenticated/admin/subcollectie/$id'
+      path: '/admin/subcollectie/$id'
+      fullPath: '/admin/subcollectie/$id'
+      preLoaderRoute: typeof AuthenticatedAdminSubcollectieIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/img/$': {
+      id: '/api/public/img/$'
+      path: '/api/public/img/$'
+      fullPath: '/api/public/img/$'
+      preLoaderRoute: typeof ApiPublicImgSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminCollectieIdRoute: typeof AuthenticatedAdminCollectieIdRoute
+  AuthenticatedAdminSubcollectieIdRoute: typeof AuthenticatedAdminSubcollectieIdRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminCollectieIdRoute: AuthenticatedAdminCollectieIdRoute,
+  AuthenticatedAdminSubcollectieIdRoute: AuthenticatedAdminSubcollectieIdRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ContactRoute: ContactRoute,
+  OverRoute: OverRoute,
+  CollectiesIndexRoute: CollectiesIndexRoute,
+  CollectiesSlugSubRoute: CollectiesSlugSubRoute,
+  CollectiesSlugIndexRoute: CollectiesSlugIndexRoute,
+  ApiPublicImgSplatRoute: ApiPublicImgSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
