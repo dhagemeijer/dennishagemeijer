@@ -46,6 +46,7 @@ function AdminDashboard() {
 
       <CollectionsAdmin />
       <NewsAdmin />
+      <SettingsAdmin />
     </div>
   );
 }
