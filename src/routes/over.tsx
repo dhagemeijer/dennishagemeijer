@@ -25,15 +25,15 @@ function AboutPage() {
   return (
     <div className="pb-8">
       <PageHeader eyebrow="Over" title="Over de fotograaf" />
-      <div className="page-shell grid gap-12 md:grid-cols-[2fr_3fr]">
-        <div>
+      <div className="page-shell grid gap-12 md:grid-cols-[2fr_3fr] md:items-start">
+        <div className="aspect-[4/5] overflow-hidden">
           <img
             src={portret}
             alt="Portret van Dennis Hagemeijer"
             width={1024}
             height={1280}
             loading="lazy"
-            className="w-full object-cover"
+            className="h-full w-full object-cover"
           />
         </div>
         <div className="space-y-6 text-base leading-relaxed text-muted-foreground">
