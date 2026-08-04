@@ -62,8 +62,8 @@ function Home() {
           <img
             src={wordmark}
             alt="Dennis Hagemeijer Fotografie"
-            width={983}
-            height={223}
+            width={1780}
+            height={844}
             className="w-[min(30rem,78vw)]"
           />
           <p className="mt-10 max-w-md text-sm leading-loose tracking-[0.06em] text-muted-foreground">

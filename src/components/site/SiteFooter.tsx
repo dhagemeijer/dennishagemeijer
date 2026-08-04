@@ -10,8 +10,8 @@ export function SiteFooter() {
             src={wordmark}
             alt="Dennis Hagemeijer Fotografie"
             loading="lazy"
-            width={983}
-            height={223}
+            width={1780}
+            height={844}
             className="h-10 w-auto opacity-80"
           />
           <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted-foreground">

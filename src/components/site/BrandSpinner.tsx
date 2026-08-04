@@ -7,8 +7,8 @@ export function BrandSpinner({ label = "Laden…" }: { label?: string }) {
         src={monogram}
         alt=""
         aria-hidden="true"
-        width={480}
-        height={309}
+        width={1830}
+        height={1839}
         className="h-10 w-auto animate-pulse opacity-70"
       />
       <span className="text-[0.6875rem] tracking-[0.22em] text-muted-foreground uppercase">
