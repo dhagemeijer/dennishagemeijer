@@ -58,7 +58,7 @@ export function NewsAdmin() {
       toast.success(editing ? "Bericht bijgewerkt" : "Bericht geplaatst");
       setOpen(false);
       setEditing(null);
-      setForm({ title: "", body: "", published_at: today() });
+      setForm({ title: "", body: "", published_at: today(), image_path: null });
       void refresh();
     },
     onError: (error: Error) => toast.error(error.message),
