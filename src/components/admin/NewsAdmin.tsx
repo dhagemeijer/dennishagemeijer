@@ -124,6 +124,12 @@ export function NewsAdmin() {
                   onChange={(e) => setForm((f) => ({ ...f, body: e.target.value }))}
                 />
               </div>
+              <ImageUploadField
+                label="Afbeelding (optioneel)"
+                value={form.image_path}
+                folder="nieuws"
+                onChange={(path) => setForm((f) => ({ ...f, image_path: path }))}
+              />
             </div>
             <DialogFooter>
               <Button onClick={() => save.mutate()} disabled={save.isPending}>
