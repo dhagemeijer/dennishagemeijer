@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as OverRouteImport } from './routes/over'
 import { Route as CollectiesIndexRouteImport } from './routes/collecties/index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminTrefwoordenRouteImport } from './routes/_authenticated/admin/trefwoorden'
 import { Route as CollectiesSlugIndexRouteImport } from './routes/collecties/$slug/index'
 import { Route as CollectiesSlugSubRouteImport } from './routes/collecties/$slug/$sub'
 import { Route as AuthenticatedAdminCollectieIdRouteImport } from './routes/_authenticated/admin/collectie.$id'
@@ -56,6 +57,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminTrefwoordenRoute =
+  AuthenticatedAdminTrefwoordenRouteImport.update({
+    id: '/admin/trefwoorden',
+    path: '/admin/trefwoorden',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const CollectiesSlugIndexRoute = CollectiesSlugIndexRouteImport.update({
   id: '/collecties/$slug/',
   path: '/collecties/$slug/',
@@ -90,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/over': typeof OverRoute
   '/collecties/': typeof CollectiesIndexRoute
+  '/admin/trefwoorden': typeof AuthenticatedAdminTrefwoordenRoute
   '/collecties/$slug/$sub': typeof CollectiesSlugSubRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/collecties/$slug/': typeof CollectiesSlugIndexRoute
@@ -103,6 +111,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/over': typeof OverRoute
   '/collecties': typeof CollectiesIndexRoute
+  '/admin/trefwoorden': typeof AuthenticatedAdminTrefwoordenRoute
   '/collecties/$slug/$sub': typeof CollectiesSlugSubRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/collecties/$slug': typeof CollectiesSlugIndexRoute
@@ -118,6 +127,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/over': typeof OverRoute
   '/collecties/': typeof CollectiesIndexRoute
+  '/_authenticated/admin/trefwoorden': typeof AuthenticatedAdminTrefwoordenRoute
   '/collecties/$slug/$sub': typeof CollectiesSlugSubRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/collecties/$slug/': typeof CollectiesSlugIndexRoute
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/over'
     | '/collecties/'
+    | '/admin/trefwoorden'
     | '/collecties/$slug/$sub'
     | '/admin/'
     | '/collecties/$slug/'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/over'
     | '/collecties'
+    | '/admin/trefwoorden'
     | '/collecties/$slug/$sub'
     | '/admin'
     | '/collecties/$slug'
@@ -160,6 +172,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/over'
     | '/collecties/'
+    | '/_authenticated/admin/trefwoorden'
     | '/collecties/$slug/$sub'
     | '/_authenticated/admin/'
     | '/collecties/$slug/'
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/trefwoorden': {
+      id: '/_authenticated/admin/trefwoorden'
+      path: '/admin/trefwoorden'
+      fullPath: '/admin/trefwoorden'
+      preLoaderRoute: typeof AuthenticatedAdminTrefwoordenRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/collecties/$slug/': {
       id: '/collecties/$slug/'
       path: '/collecties/$slug'
@@ -270,12 +290,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminTrefwoordenRoute: typeof AuthenticatedAdminTrefwoordenRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminCollectieIdRoute: typeof AuthenticatedAdminCollectieIdRoute
   AuthenticatedAdminSubcollectieIdRoute: typeof AuthenticatedAdminSubcollectieIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminTrefwoordenRoute: AuthenticatedAdminTrefwoordenRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminCollectieIdRoute: AuthenticatedAdminCollectieIdRoute,
   AuthenticatedAdminSubcollectieIdRoute: AuthenticatedAdminSubcollectieIdRoute,
