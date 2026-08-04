@@ -155,6 +155,7 @@ export function NewsAdmin() {
                     title: post.title,
                     body: post.body,
                     published_at: post.published_at.slice(0, 10),
+                    image_path: post.image_path,
                   });
                   setOpen(true);
                 }}
