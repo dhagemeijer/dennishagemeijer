@@ -18,10 +18,23 @@ export type Subcollection = {
   slug: string;
   description: string;
   event_date: string | null;
+  home_team: string | null;
+  away_team: string | null;
   cover_photo_url: string | null;
   sort_order: number;
   created_at: string;
 };
+
+/** "Team A — Team B" when both teams are filled in, otherwise null. */
+export function matchLabel(sub: {
+  home_team: string | null;
+  away_team: string | null;
+}): string | null {
+  const home = sub.home_team?.trim();
+  const away = sub.away_team?.trim();
+  if (home && away) return `${home} — ${away}`;
+  return home || away || null;
+}
 
 export type Photo = {
   id: string;
