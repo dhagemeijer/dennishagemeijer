@@ -17,7 +17,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { newsQuery, type NewsPost } from "@/lib/queries";
-import { formatDateNl } from "@/lib/photo";
+import { formatDateNl, photoUrl } from "@/lib/photo";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -26,7 +27,12 @@ export function NewsAdmin() {
   const { data: posts = [] } = useQuery(newsQuery);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<NewsPost | null>(null);
-  const [form, setForm] = useState({ title: "", body: "", published_at: today() });
+  const [form, setForm] = useState<{
+    title: string;
+    body: string;
+    published_at: string;
+    image_path: string | null;
+  }>({ title: "", body: "", published_at: today(), image_path: null });
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["news"] });
 
