@@ -8,6 +8,7 @@ export type Collection = {
   description: string;
   cover_photo_url: string | null;
   sort_order: number;
+  keywords: string[];
   created_at: string;
 };
 
@@ -22,6 +23,7 @@ export type Subcollection = {
   away_team: string | null;
   cover_photo_url: string | null;
   sort_order: number;
+  keywords: string[];
   created_at: string;
 };
 
@@ -44,6 +46,7 @@ export type Photo = {
   storage_path: string;
   image_url: string;
   sort_order: number;
+  keywords: string[];
   is_featured: boolean;
   created_at: string;
 };
