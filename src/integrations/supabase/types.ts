@@ -151,11 +151,13 @@ export type Database = {
       }
       subcollections: {
         Row: {
+          away_team: string | null
           collection_id: string
           cover_photo_url: string | null
           created_at: string
           description: string
           event_date: string | null
+          home_team: string | null
           id: string
           name: string
           slug: string
@@ -163,11 +165,13 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          away_team?: string | null
           collection_id: string
           cover_photo_url?: string | null
           created_at?: string
           description?: string
           event_date?: string | null
+          home_team?: string | null
           id?: string
           name: string
           slug: string
@@ -175,11 +179,13 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          away_team?: string | null
           collection_id?: string
           cover_photo_url?: string | null
           created_at?: string
           description?: string
           event_date?: string | null
+          home_team?: string | null
           id?: string
           name?: string
           slug?: string

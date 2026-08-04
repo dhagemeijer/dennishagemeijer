@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -17,18 +17,44 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { subcollectionsQuery, type Subcollection } from "@/lib/queries";
-import { formatDateNl, slugify } from "@/lib/photo";
+import {
+  matchLabel,
+  subcollectionPhotoCountsQuery,
+  subcollectionsQuery,
+  type Subcollection,
+} from "@/lib/queries";
+import { formatDateNl, photoUrl, slugify } from "@/lib/photo";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
+
+type Form = {
+  name: string;
+  description: string;
+  event_date: string;
+  home_team: string;
+  away_team: string;
+  cover: string | null;
+};
+
+const emptyForm: Form = {
+  name: "",
+  description: "",
+  event_date: "",
+  home_team: "",
+  away_team: "",
+  cover: null,
+};
 
 export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) {
   const queryClient = useQueryClient();
   const { data: subcollections = [] } = useQuery(subcollectionsQuery(collectionId));
+  const { data: photoCounts = {} } = useQuery(subcollectionPhotoCountsQuery(collectionId));
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Subcollection | null>(null);
-  const [form, setForm] = useState({ name: "", description: "", event_date: "" });
+  const [form, setForm] = useState<Form>(emptyForm);
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: ["subcollections"] });
+    void queryClient.invalidateQueries({ queryKey: ["subcollection-photo-counts"] });
     void queryClient.invalidateQueries({ queryKey: ["collection-counts"] });
   };
 
@@ -40,6 +66,9 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
         name,
         description: form.description.trim(),
         event_date: form.event_date || null,
+        home_team: form.home_team.trim() || null,
+        away_team: form.away_team.trim() || null,
+        cover_photo_url: form.cover,
       };
       if (editing) {
         const { error } = await supabase
@@ -61,7 +90,7 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
       toast.success(editing ? "Subcollectie bijgewerkt" : "Subcollectie aangemaakt");
       setOpen(false);
       setEditing(null);
-      setForm({ name: "", description: "", event_date: "" });
+      setForm(emptyForm);
       refresh();
     },
     onError: (error: Error) => toast.error(error.message),
@@ -79,23 +108,52 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const move = useMutation({
+    mutationFn: async ({ index, direction }: { index: number; direction: -1 | 1 }) => {
+      const target = index + direction;
+      const a = subcollections[index];
+      const b = subcollections[target];
+      if (!a || !b) return;
+      const results = await Promise.all([
+        supabase.from("subcollections").update({ sort_order: target }).eq("id", a.id),
+        supabase.from("subcollections").update({ sort_order: index }).eq("id", b.id),
+      ]);
+      const failed = results.find((r) => r.error);
+      if (failed?.error) throw new Error(failed.error.message);
+    },
+    onSuccess: refresh,
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const startCreate = () => {
+    setEditing(null);
+    setForm(emptyForm);
+  };
+
+  const startEdit = (sub: Subcollection) => {
+    setEditing(sub);
+    setForm({
+      name: sub.name,
+      description: sub.description,
+      event_date: sub.event_date?.slice(0, 10) ?? "",
+      home_team: sub.home_team ?? "",
+      away_team: sub.away_team ?? "",
+      cover: sub.cover_photo_url,
+    });
+    setOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="font-display text-xl font-semibold">Subcollecties</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setEditing(null);
-                setForm({ name: "", description: "", event_date: "" });
-              }}
-            >
+            <Button variant="outline" onClick={startCreate}>
               <Plus className="mr-2 size-4" /> Nieuwe subcollectie
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {editing ? "Subcollectie bewerken" : "Nieuwe subcollectie"}
@@ -111,8 +169,28 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
                   onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                 />
               </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="sub-home">Thuisteam (optioneel)</Label>
+                  <Input
+                    id="sub-home"
+                    value={form.home_team}
+                    maxLength={80}
+                    onChange={(e) => setForm((f) => ({ ...f, home_team: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="sub-away">Uitteam (optioneel)</Label>
+                  <Input
+                    id="sub-away"
+                    value={form.away_team}
+                    maxLength={80}
+                    onChange={(e) => setForm((f) => ({ ...f, away_team: e.target.value }))}
+                  />
+                </div>
+              </div>
               <div className="space-y-2">
-                <Label htmlFor="sub-date">Datum</Label>
+                <Label htmlFor="sub-date">Datum (optioneel)</Label>
                 <Input
                   id="sub-date"
                   type="date"
@@ -130,6 +208,12 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
                   onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 />
               </div>
+              <ImageUploadField
+                label="Omslagfoto"
+                value={form.cover}
+                folder="covers/subcollecties"
+                onChange={(cover) => setForm((f) => ({ ...f, cover }))}
+              />
             </div>
             <DialogFooter>
               <Button onClick={() => save.mutate()} disabled={save.isPending}>
@@ -146,49 +230,73 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
         </p>
       ) : (
         <ul className="divide-y divide-border border-y border-border">
-          {subcollections.map((sub) => (
-            <li key={sub.id} className="flex items-center gap-4 py-3">
-              <div className="min-w-0 flex-1">
-                <Link
-                  to="/admin/subcollectie/$id"
-                  params={{ id: sub.id }}
-                  className="font-medium hover:text-primary"
+          {subcollections.map((sub, index) => {
+            const cover = photoUrl(sub.cover_photo_url);
+            const teams = matchLabel(sub);
+            const count = photoCounts[sub.id] ?? 0;
+            return (
+              <li key={sub.id} className="flex items-center gap-4 py-3">
+                <div className="size-16 shrink-0 overflow-hidden bg-muted">
+                  {cover ? (
+                    <img src={cover} alt="" loading="lazy" className="size-full object-cover" />
+                  ) : null}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <Link
+                    to="/admin/subcollectie/$id"
+                    params={{ id: sub.id }}
+                    className="font-medium hover:text-primary"
+                  >
+                    {sub.name}
+                  </Link>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {[teams, sub.event_date ? formatDateNl(sub.event_date) : null]
+                      .filter(Boolean)
+                      .join(" · ") || "Geen wedstrijdgegevens"}
+                    {" · "}
+                    {count} {count === 1 ? "foto" : "foto's"}
+                  </p>
+                </div>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  aria-label="Omhoog"
+                  disabled={index === 0 || move.isPending}
+                  onClick={() => move.mutate({ index, direction: -1 })}
                 >
-                  {sub.name}
-                </Link>
-                <p className="text-xs text-muted-foreground">
-                  {sub.event_date ? formatDateNl(sub.event_date) : "Geen datum"}
-                </p>
-              </div>
-              <Button
-                size="icon"
-                variant="outline"
-                aria-label="Bewerken"
-                onClick={() => {
-                  setEditing(sub);
-                  setForm({
-                    name: sub.name,
-                    description: sub.description,
-                    event_date: sub.event_date?.slice(0, 10) ?? "",
-                  });
-                  setOpen(true);
-                }}
-              >
-                <Pencil className="size-4" />
-              </Button>
-              <Button
-                size="icon"
-                variant="outline"
-                aria-label="Verwijderen"
-                className="text-primary"
-                onClick={() => {
-                  if (confirm(`"${sub.name}" en de foto's erin verwijderen?`)) remove.mutate(sub.id);
-                }}
-              >
-                <Trash2 className="size-4" />
-              </Button>
-            </li>
-          ))}
+                  <ArrowUp className="size-4" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  aria-label="Omlaag"
+                  disabled={index === subcollections.length - 1 || move.isPending}
+                  onClick={() => move.mutate({ index, direction: 1 })}
+                >
+                  <ArrowDown className="size-4" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  aria-label="Bewerken"
+                  onClick={() => startEdit(sub)}
+                >
+                  <Pencil className="size-4" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  aria-label="Verwijderen"
+                  className="text-primary"
+                  onClick={() => {
+                    if (confirm(`"${sub.name}" en de foto's erin verwijderen?`)) remove.mutate(sub.id);
+                  }}
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

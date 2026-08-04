@@ -18,10 +18,23 @@ export type Subcollection = {
   slug: string;
   description: string;
   event_date: string | null;
+  home_team: string | null;
+  away_team: string | null;
   cover_photo_url: string | null;
   sort_order: number;
   created_at: string;
 };
+
+/** "Team A — Team B" when both teams are filled in, otherwise null. */
+export function matchLabel(sub: {
+  home_team: string | null;
+  away_team: string | null;
+}): string | null {
+  const home = sub.home_team?.trim();
+  const away = sub.away_team?.trim();
+  if (home && away) return `${home} — ${away}`;
+  return home || away || null;
+}
 
 export type Photo = {
   id: string;
@@ -65,7 +78,7 @@ export const collectionCountsQuery = queryOptions({
   queryFn: async () => {
     const [subs, photos] = await Promise.all([
       supabase.from("subcollections").select("id, collection_id"),
-      supabase.from("photos").select("id, collection_id"),
+      supabase.from("photos").select("id, collection_id").is("subcollection_id", null),
     ]);
     if (subs.error) throw new Error(subs.error.message);
     if (photos.error) throw new Error(photos.error.message);
@@ -234,6 +247,35 @@ export function siteContentQuery(key: string) {
         .maybeSingle();
       if (error) throw new Error(error.message);
       return (data as SiteContent | null) ?? null;
+    },
+  });
+}
+
+/** Photo count per subcollection within one collection. */
+export function subcollectionPhotoCountsQuery(collectionId: string) {
+  return queryOptions({
+    queryKey: ["subcollection-photo-counts", collectionId],
+    queryFn: async () => {
+      const { data: subs, error: subsError } = await supabase
+        .from("subcollections")
+        .select("id")
+        .eq("collection_id", collectionId);
+      if (subsError) throw new Error(subsError.message);
+      const ids = (subs ?? []).map((s) => s.id as string);
+      const counts: Record<string, number> = {};
+      for (const id of ids) counts[id] = 0;
+      if (ids.length === 0) return counts;
+      const { data, error } = await supabase
+        .from("photos")
+        .select("id, subcollection_id")
+        .in("subcollection_id", ids);
+      if (error) throw new Error(error.message);
+      for (const row of data ?? []) {
+        const key = row.subcollection_id as string | null;
+        if (!key) continue;
+        counts[key] = (counts[key] ?? 0) + 1;
+      }
+      return counts;
     },
   });
 }

@@ -6,6 +6,8 @@ import { PhotoGrid } from "@/components/site/PhotoGrid";
 import {
   collectionBySlugQuery,
   collectionPhotosQuery,
+  matchLabel,
+  subcollectionPhotoCountsQuery,
   subcollectionsQuery,
 } from "@/lib/queries";
 import { photoUrl, formatDateNl } from "@/lib/photo";
@@ -19,6 +21,7 @@ export const Route = createFileRoute("/collecties/$slug/")({
     await Promise.all([
       context.queryClient.ensureQueryData(subcollectionsQuery(collection.id)),
       context.queryClient.ensureQueryData(collectionPhotosQuery(collection.id)),
+      context.queryClient.ensureQueryData(subcollectionPhotoCountsQuery(collection.id)),
     ]);
     return { collection };
   },
@@ -61,6 +64,10 @@ function CollectionDetail() {
   const { collection } = Route.useLoaderData();
   const { data: subcollections } = useSuspenseQuery(subcollectionsQuery(collection.id));
   const { data: photos } = useSuspenseQuery(collectionPhotosQuery(collection.id));
+  const { data: photoCounts } = useSuspenseQuery(
+    subcollectionPhotoCountsQuery(collection.id),
+  );
+  const hasSubcollections = subcollections.length > 0;
 
   return (
     <div className="pb-8">
@@ -76,12 +83,13 @@ function CollectionDetail() {
       />
 
       <div className="page-shell space-y-16">
-        {subcollections.length > 0 ? (
+        {hasSubcollections ? (
           <section>
-            <h2 className="font-display text-2xl font-semibold">Subcollecties</h2>
-            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {subcollections.map((sub) => {
                 const cover = photoUrl(sub.cover_photo_url);
+                const teams = matchLabel(sub);
+                const count = photoCounts[sub.id] ?? 0;
                 return (
                   <Link
                     key={sub.id}
@@ -106,27 +114,29 @@ function CollectionDetail() {
                     <h3 className="mt-4 font-display text-lg font-semibold group-hover:text-primary">
                       {sub.name}
                     </h3>
-                    {sub.event_date ? (
-                      <p className="mt-1 text-xs tracking-wider text-muted-foreground uppercase">
-                        {formatDateNl(sub.event_date)}
-                      </p>
+                    {teams ? (
+                      <p className="mt-1 text-sm font-medium text-foreground">{teams}</p>
                     ) : null}
+                    <p className="mt-1 text-xs tracking-wider text-muted-foreground uppercase">
+                      {[
+                        sub.event_date ? formatDateNl(sub.event_date) : null,
+                        `${count} ${count === 1 ? "foto" : "foto's"}`,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
                   </Link>
                 );
               })}
             </div>
           </section>
-        ) : null}
-
-        {photos.length > 0 || subcollections.length === 0 ? (
+        ) : (
           <section>
-            {subcollections.length > 0 ? (
-              <h2 className="mb-6 font-display text-2xl font-semibold">Losse foto&apos;s</h2>
-            ) : null}
             <PhotoGrid photos={photos} />
           </section>
-        ) : null}
+        )}
       </div>
     </div>
   );
 }
+

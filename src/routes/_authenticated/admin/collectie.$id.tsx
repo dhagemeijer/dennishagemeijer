@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { collectionByIdQuery } from "@/lib/queries";
+import { collectionByIdQuery, subcollectionsQuery } from "@/lib/queries";
 import { SubcollectionsAdmin } from "@/components/admin/SubcollectionsAdmin";
 import { PhotoManager } from "@/components/admin/PhotoManager";
 
@@ -21,6 +21,7 @@ export const Route = createFileRoute("/_authenticated/admin/collectie/$id")({
 function AdminCollection() {
   const { id } = Route.useParams();
   const { data: collection, isLoading } = useQuery(collectionByIdQuery(id));
+  const { data: subcollections = [] } = useQuery(subcollectionsQuery(id));
 
   if (isLoading) {
     return <p className="page-shell py-12 text-sm text-muted-foreground">Laden…</p>;
@@ -52,7 +53,14 @@ function AdminCollection() {
 
       <div className="space-y-6">
         <h2 className="font-display text-xl font-semibold">Foto&apos;s direct in deze collectie</h2>
-        <PhotoManager target={{ collectionId: collection.id }} />
+        {subcollections.length > 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Deze collectie heeft subcollecties, dus foto&apos;s horen daarin. Op de publieke pagina
+            worden alleen de subcollecties getoond.
+          </p>
+        ) : (
+          <PhotoManager target={{ collectionId: collection.id }} />
+        )}
       </div>
     </div>
   );
