@@ -158,8 +158,25 @@ function ContactPage() {
             />
             {errors['bericht'] ? <p className="text-xs text-primary">{errors['bericht']}</p> : null}
           </div>
-          <Button type="submit" size="lg">
-            Verstuur bericht
+          {status === "success" || status === "error" ? (
+            <div
+              role="status"
+              className={`flex items-start gap-2 border p-3 text-sm ${
+                status === "success"
+                  ? "border-border text-foreground"
+                  : "border-primary text-primary"
+              }`}
+            >
+              {status === "success" ? (
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
+              ) : (
+                <AlertCircle className="mt-0.5 size-4 shrink-0" />
+              )}
+              <p>{statusMessage}</p>
+            </div>
+          ) : null}
+          <Button type="submit" size="lg" disabled={status === "sending"}>
+            {status === "sending" ? "Versturen…" : "Verstuur bericht"}
           </Button>
         </form>
       </div>
