@@ -6,6 +6,7 @@ import heroImage from "@/assets/hero.jpg";
 import wordmark from "@/assets/wordmark.png";
 import { Button } from "@/components/ui/button";
 import { newsQuery, recentPhotosQuery, collectionsQuery } from "@/lib/queries";
+import { SiteSearch } from "@/components/site/SiteSearch";
 import { photoUrl, formatDateNl } from "@/lib/photo";
 
 export const Route = createFileRoute("/")({
@@ -77,6 +78,11 @@ function Home() {
         <span className="scroll-hint absolute bottom-10 text-muted-foreground">
           <ChevronDown className="size-5" />
         </span>
+      </section>
+
+      {/* Search — keyword-first entry into the archive */}
+      <section className="page-shell pt-32">
+        <SiteSearch placeholder="Zoek op trefwoord, collectie of foto" />
       </section>
 
       {/* Collections — large photography, minimal chrome */}
