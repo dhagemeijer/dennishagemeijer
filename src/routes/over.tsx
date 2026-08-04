@@ -28,7 +28,7 @@ function AboutPage() {
       <div className="page-shell grid gap-12 md:grid-cols-[2fr_3fr] md:items-start">
         <div className="aspect-[4/5] overflow-hidden">
           <img
-            src={portret}
+            src={portret.url}
             alt="Portret van Dennis Hagemeijer"
             width={1024}
             height={1280}
