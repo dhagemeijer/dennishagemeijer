@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { collectionsQuery, collectionCountsQuery, type Collection } from "@/lib/queries";
 import { photoUrl, slugify } from "@/lib/photo";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 export function CollectionsAdmin() {
   const queryClient = useQueryClient();
@@ -26,7 +27,11 @@ export function CollectionsAdmin() {
   const { data: counts = {} } = useQuery(collectionCountsQuery);
   const [editing, setEditing] = useState<Collection | null>(null);
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", description: "" });
+  const [form, setForm] = useState<{
+    name: string;
+    description: string;
+    cover: string | null;
+  }>({ name: "", description: "", cover: null });
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: ["collections"] });
@@ -40,7 +45,11 @@ export function CollectionsAdmin() {
       if (editing) {
         const { error } = await supabase
           .from("collections")
-          .update({ name, description: form.description.trim() })
+          .update({
+            name,
+            description: form.description.trim(),
+            cover_photo_url: form.cover,
+          })
           .eq("id", editing.id);
         if (error) throw new Error(error.message);
         return;
@@ -49,6 +58,7 @@ export function CollectionsAdmin() {
         name,
         slug: slugify(name) || crypto.randomUUID().slice(0, 8),
         description: form.description.trim(),
+        cover_photo_url: form.cover,
         sort_order: collections.length,
       });
       if (error) throw new Error(error.message);
@@ -57,7 +67,7 @@ export function CollectionsAdmin() {
       toast.success(editing ? "Collectie bijgewerkt" : "Collectie aangemaakt");
       setOpen(false);
       setEditing(null);
-      setForm({ name: "", description: "" });
+      setForm({ name: "", description: "", cover: null });
       refresh();
     },
     onError: (error: Error) => toast.error(error.message),
@@ -77,13 +87,17 @@ export function CollectionsAdmin() {
 
   const startCreate = () => {
     setEditing(null);
-    setForm({ name: "", description: "" });
+    setForm({ name: "", description: "", cover: null });
     setOpen(true);
   };
 
   const startEdit = (collection: Collection) => {
     setEditing(collection);
-    setForm({ name: collection.name, description: collection.description });
+    setForm({
+      name: collection.name,
+      description: collection.description,
+      cover: collection.cover_photo_url,
+    });
     setOpen(true);
   };
 
@@ -121,6 +135,12 @@ export function CollectionsAdmin() {
                   onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 />
               </div>
+              <ImageUploadField
+                label="Omslagfoto"
+                value={form.cover}
+                folder="covers/collecties"
+                onChange={(cover) => setForm((f) => ({ ...f, cover }))}
+              />
             </div>
             <DialogFooter>
               <Button onClick={() => save.mutate()} disabled={save.isPending}>
