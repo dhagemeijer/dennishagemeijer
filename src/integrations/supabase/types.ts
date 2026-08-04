@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          keywords: string[]
           name: string
           slug: string
           sort_order: number
@@ -30,6 +31,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          keywords?: string[]
           name: string
           slug: string
           sort_order?: number
@@ -40,6 +42,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          keywords?: string[]
           name?: string
           slug?: string
           sort_order?: number
@@ -84,6 +87,7 @@ export type Database = {
           id: string
           image_url: string
           is_featured: boolean
+          keywords: string[]
           sort_order: number
           storage_path: string
           subcollection_id: string | null
@@ -95,6 +99,7 @@ export type Database = {
           id?: string
           image_url: string
           is_featured?: boolean
+          keywords?: string[]
           sort_order?: number
           storage_path: string
           subcollection_id?: string | null
@@ -106,6 +111,7 @@ export type Database = {
           id?: string
           image_url?: string
           is_featured?: boolean
+          keywords?: string[]
           sort_order?: number
           storage_path?: string
           subcollection_id?: string | null
@@ -162,6 +168,7 @@ export type Database = {
           event_date: string | null
           home_team: string | null
           id: string
+          keywords: string[]
           name: string
           slug: string
           sort_order: number
@@ -176,6 +183,7 @@ export type Database = {
           event_date?: string | null
           home_team?: string | null
           id?: string
+          keywords?: string[]
           name: string
           slug: string
           sort_order?: number
@@ -190,6 +198,7 @@ export type Database = {
           event_date?: string | null
           home_team?: string | null
           id?: string
+          keywords?: string[]
           name?: string
           slug?: string
           sort_order?: number
