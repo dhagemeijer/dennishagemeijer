@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ArrowRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import heroImage from "@/assets/hero.jpg";
+import wordmark from "@/assets/wordmark.png";
 import { Button } from "@/components/ui/button";
 import { newsQuery, recentPhotosQuery, collectionsQuery } from "@/lib/queries";
 import { photoUrl, formatDateNl } from "@/lib/photo";
@@ -43,113 +44,128 @@ function Home() {
   const { data: photos } = useSuspenseQuery(recentPhotosQuery);
   const { data: collections } = useSuspenseQuery(collectionsQuery);
 
+  const heroSrc = photoUrl(photos[0]?.storage_path ?? null) ?? heroImage;
+
   return (
     <div>
-      <section className="relative isolate overflow-hidden bg-ink text-ink-foreground">
+      {/* Hero — one strong photo, wordmark, tagline */}
+      <section className="relative isolate -mt-24 flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background">
         <img
-          src={heroImage}
-          alt="Fotograaf in de mist bij zonsopkomst"
+          src={heroSrc}
+          alt="Fotografie van Dennis Hagemeijer"
           width={1920}
           height={1088}
-          className="absolute inset-0 size-full object-cover opacity-45"
+          className="absolute inset-0 size-full object-cover opacity-40"
         />
-        <div className="page-shell relative flex min-h-[70vh] flex-col justify-end py-20">
-          <p className="text-[0.6875rem] tracking-[0.28em] text-primary uppercase">
-            Fotografie uit Nederland
+        <div className="absolute inset-0 bg-background/40" />
+        <div className="fade-up relative flex flex-col items-center px-6 text-center">
+          <img
+            src={wordmark}
+            alt="Dennis Hagemeijer Fotografie"
+            width={983}
+            height={223}
+            className="w-[min(30rem,78vw)]"
+          />
+          <p className="mt-10 max-w-md text-sm leading-loose tracking-[0.06em] text-muted-foreground">
+            Macro, natuur, street en voetbal — stil vastgelegd, met aandacht voor licht en
+            vakmanschap.
           </p>
-          <h1 className="mt-4 max-w-3xl font-display text-4xl leading-[1.05] font-semibold sm:text-6xl">
-            Momenten in macro, natuur, street en voetbal.
-          </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-ink-foreground/80">
-            Ik ben Dennis Hagemeijer. Ik fotografeer wat me raakt — van het kleinste insect tot de
-            grootste ontlading langs de lijn. Bekijk mijn werk per collectie.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <Link to="/collecties">
-                Bekijk collecties <ArrowRight className="ml-2 size-4" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-ink-foreground/30 bg-transparent text-ink-foreground hover:bg-ink-foreground/10 hover:text-ink-foreground"
-            >
-              <Link to="/contact">Neem contact op</Link>
-            </Button>
-          </div>
+          <Button asChild size="lg" className="mt-12">
+            <Link to="/collecties">Bekijk portfolio</Link>
+          </Button>
         </div>
+        <span className="scroll-hint absolute bottom-10 text-muted-foreground">
+          <ChevronDown className="size-5" />
+        </span>
       </section>
 
-      <section className="page-shell pt-20">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="eyebrow">Recent werk</p>
-            <h2 className="mt-3 font-display text-3xl font-semibold">Uitgelichte foto&apos;s</h2>
+      {/* Collections — large photography, minimal chrome */}
+      {collections.length > 0 ? (
+        <section className="page-shell pt-32">
+          <div className="flex flex-wrap items-baseline justify-between gap-6">
+            <div>
+              <p className="eyebrow">Portfolio</p>
+              <h2 className="mt-5 font-display text-4xl sm:text-5xl">Collecties</h2>
+            </div>
+            <Link
+              to="/collecties"
+              className="text-[0.6875rem] tracking-[0.22em] text-muted-foreground uppercase transition-colors duration-300 hover:text-primary"
+            >
+              Alles bekijken
+            </Link>
           </div>
-          <Link
-            to="/collecties"
-            className="text-sm text-muted-foreground underline decoration-primary decoration-2 underline-offset-4 hover:text-foreground"
-          >
-            Alle collecties
-          </Link>
-        </div>
 
-        {photos.length === 0 ? (
-          <p className="mt-8 text-sm text-muted-foreground">
-            Er zijn nog geen foto&apos;s geüpload. Voeg werk toe via het beheer.
-          </p>
-        ) : (
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-            {photos.map((photo) => (
-              <figure key={photo.id} className="relative aspect-square overflow-hidden bg-muted">
+          <div className="mt-16 grid gap-x-8 gap-y-16 md:grid-cols-2">
+            {collections.slice(0, 4).map((collection) => {
+              const cover = photoUrl(collection.cover_photo_url);
+              return (
+                <Link
+                  key={collection.id}
+                  to="/collecties/$slug"
+                  params={{ slug: collection.slug }}
+                  className="group block"
+                >
+                  <div className="relative aspect-[4/5] overflow-hidden bg-card">
+                    {cover ? (
+                      <img
+                        src={cover}
+                        alt={collection.name}
+                        loading="lazy"
+                        className="size-full object-cover opacity-90 transition-all duration-[350ms] ease-out group-hover:scale-[1.02] group-hover:opacity-100"
+                      />
+                    ) : null}
+                  </div>
+                  <h3 className="mt-6 font-display text-2xl transition-colors duration-300 group-hover:text-primary">
+                    {collection.name}
+                  </h3>
+                  {collection.description ? (
+                    <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+                      {collection.description}
+                    </p>
+                  ) : null}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      {/* Recent work — quiet strip */}
+      {photos.length > 1 ? (
+        <section className="page-shell pt-32">
+          <p className="eyebrow">Recent werk</p>
+          <div className="mt-10 grid grid-cols-2 gap-2 md:grid-cols-4">
+            {photos.slice(0, 4).map((photo) => (
+              <figure key={photo.id} className="relative aspect-square overflow-hidden bg-card">
                 <img
                   src={photoUrl(photo.storage_path) ?? ""}
                   alt={photo.title || "Foto"}
                   loading="lazy"
-                  className="size-full object-cover transition-transform duration-500 hover:scale-105"
+                  className="size-full object-cover opacity-90 transition-all duration-[350ms] ease-out hover:scale-[1.02] hover:opacity-100"
                 />
               </figure>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {collections.length > 0 ? (
-        <section className="page-shell pt-20">
-          <p className="eyebrow">Collecties</p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {collections.map((collection) => (
-              <Link
-                key={collection.id}
-                to="/collecties/$slug"
-                params={{ slug: collection.slug }}
-                className="border border-border px-4 py-2 text-sm transition-colors hover:border-primary hover:text-primary"
-              >
-                {collection.name}
-              </Link>
             ))}
           </div>
         </section>
       ) : null}
 
-      <section className="page-shell pt-20">
+      {/* News — editorial, no cards */}
+      <section className="page-shell pt-32">
         <p className="eyebrow">Nieuws</p>
-        <h2 className="mt-3 font-display text-3xl font-semibold">Laatste updates</h2>
-        <span className="rule-accent mt-6" />
+        <h2 className="mt-5 font-display text-4xl sm:text-5xl">Laatste updates</h2>
+        <span className="rule-accent mt-8" />
         {news.length === 0 ? (
-          <p className="mt-8 text-sm text-muted-foreground">Er is nog geen nieuws geplaatst.</p>
+          <p className="mt-12 text-sm text-muted-foreground">Er is nog geen nieuws geplaatst.</p>
         ) : (
-          <ul className="mt-8 divide-y divide-border border-y border-border">
+          <ul className="mt-12 divide-y divide-border border-t border-border">
             {news.slice(0, 5).map((post) => {
               const image = post.image_path ? photoUrl(post.image_path) : null;
               return (
-                <li key={post.id} className="grid gap-4 py-8 md:grid-cols-[10rem_1fr] md:gap-8">
-                  <time className="text-sm text-muted-foreground">
+                <li key={post.id} className="grid gap-6 py-12 md:grid-cols-[9rem_1fr] md:gap-12">
+                  <time className="text-[0.6875rem] tracking-[0.18em] text-muted-foreground uppercase">
                     {formatDateNl(post.published_at)}
                   </time>
-                  <div className="grid gap-4 sm:grid-cols-[14rem_1fr] sm:gap-6">
+                  <div className="grid gap-6 sm:grid-cols-[16rem_1fr] sm:gap-8">
                     {image ? (
                       <img
                         src={image}
@@ -159,8 +175,8 @@ function Home() {
                       />
                     ) : null}
                     <div>
-                      <h3 className="font-display text-xl font-semibold">{post.title}</h3>
-                      <p className="mt-2 line-clamp-4 leading-relaxed whitespace-pre-line text-muted-foreground">
+                      <h3 className="font-display text-2xl">{post.title}</h3>
+                      <p className="mt-4 line-clamp-4 leading-loose whitespace-pre-line text-muted-foreground">
                         {post.body}
                       </p>
                     </div>

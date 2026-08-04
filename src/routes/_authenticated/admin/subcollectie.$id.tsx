@@ -46,7 +46,7 @@ function AdminSubcollection() {
         >
           ← Collectie
         </Link>
-        <h1 className="mt-3 font-display text-3xl font-semibold">{sub.name}</h1>
+        <h1 className="mt-3 font-display text-3xl">{sub.name}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {[matchLabel(sub), sub.event_date ? formatDateNl(sub.event_date) : null]
             .filter(Boolean)

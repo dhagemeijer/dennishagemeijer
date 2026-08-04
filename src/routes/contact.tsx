@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Mail, MapPin, Instagram, CheckCircle2, AlertCircle } from "lucide-react";
 
 import { PageHeader } from "@/components/site/PageHeader";
+import wordmark from "@/assets/wordmark.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -95,12 +96,20 @@ function ContactPage() {
         description="Vragen over een serie, een print of een opdracht? Stuur een bericht en ik reageer zo snel mogelijk."
       />
 
-      <div className="page-shell grid gap-12 md:grid-cols-[2fr_3fr]">
-        <div className="space-y-6 text-sm">
+      <div className="page-shell grid gap-16 md:grid-cols-[2fr_3fr]">
+        <div className="space-y-8 text-sm">
+          <img
+            src={wordmark}
+            alt="Dennis Hagemeijer Fotografie"
+            loading="lazy"
+            width={983}
+            height={223}
+            className="h-10 w-auto opacity-80"
+          />
           <div className="flex items-start gap-3">
             <Mail className="mt-0.5 size-4 text-primary" />
             <div>
-              <p className="font-medium">E-mail</p>
+              <p className="text-[0.6875rem] tracking-[0.18em] text-foreground uppercase">E-mail</p>
               <a href={`mailto:${EMAIL}`} className="text-muted-foreground hover:text-primary">
                 {EMAIL}
               </a>
@@ -109,14 +118,14 @@ function ContactPage() {
           <div className="flex items-start gap-3">
             <MapPin className="mt-0.5 size-4 text-primary" />
             <div>
-              <p className="font-medium">Standplaats</p>
+              <p className="text-[0.6875rem] tracking-[0.18em] text-foreground uppercase">Standplaats</p>
               <p className="text-muted-foreground">Nederland — werkt landelijk</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Instagram className="mt-0.5 size-4 text-primary" />
             <div>
-              <p className="font-medium">Social</p>
+              <p className="text-[0.6875rem] tracking-[0.18em] text-foreground uppercase">Social</p>
               <p className="text-muted-foreground">Volgt binnenkort</p>
             </div>
           </div>
@@ -124,7 +133,7 @@ function ContactPage() {
 
         <form
           onSubmit={(e) => void onSubmit(e)}
-          className="space-y-5 border border-border p-6 sm:p-8"
+          className="space-y-6 rounded-xl border border-border bg-card p-6 sm:p-8"
         >
           <div className="space-y-2">
             <Label htmlFor="naam">Naam</Label>
@@ -161,7 +170,7 @@ function ContactPage() {
           {status === "success" || status === "error" ? (
             <div
               role="status"
-              className={`flex items-start gap-2 border p-3 text-sm ${
+              className={`flex items-start gap-2 rounded-md border p-4 text-sm ${
                 status === "success"
                   ? "border-border text-foreground"
                   : "border-primary text-primary"

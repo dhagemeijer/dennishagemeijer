@@ -79,7 +79,7 @@ function AuthPage() {
   return (
     <div className="page-shell flex min-h-[70vh] items-center justify-center py-16">
       <div className="w-full max-w-sm">
-        <h1 className="font-display text-2xl font-semibold">Beheer</h1>
+        <h1 className="font-display text-2xl">Beheer</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Log in om collecties, foto&apos;s en nieuws te beheren.
         </p>

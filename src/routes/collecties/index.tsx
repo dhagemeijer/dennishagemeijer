@@ -53,7 +53,7 @@ function CollectionsPage() {
             Er zijn nog geen collecties aangemaakt.
           </p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-8 gap-y-16 md:grid-cols-2">
             {collections.map((collection) => {
               const count = counts[collection.id];
               const label =
@@ -69,30 +69,30 @@ function CollectionsPage() {
                   params={{ slug: collection.slug }}
                   className="group block"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                  <div className="relative aspect-[4/5] overflow-hidden bg-card">
                     {cover ? (
                       <img
                         src={cover}
                         alt={collection.name}
                         loading="lazy"
-                        className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="size-full object-cover opacity-90 transition-all duration-[350ms] ease-out group-hover:scale-[1.02] group-hover:opacity-100"
                       />
                     ) : (
-                      <div className="flex size-full items-center justify-center text-xs text-muted-foreground">
+                      <div className="flex size-full items-center justify-center text-[0.6875rem] tracking-[0.18em] text-muted-foreground uppercase">
                         Geen omslagfoto
                       </div>
                     )}
                   </div>
-                  <div className="mt-4 flex items-baseline justify-between gap-4">
-                    <h2 className="font-display text-xl font-semibold group-hover:text-primary">
+                  <div className="mt-6 flex items-baseline justify-between gap-4">
+                    <h2 className="font-display text-2xl transition-colors duration-300 group-hover:text-primary">
                       {collection.name}
                     </h2>
-                    <span className="text-xs tracking-wider text-muted-foreground uppercase">
+                    <span className="text-[0.6875rem] tracking-[0.18em] text-muted-foreground uppercase">
                       {label}
                     </span>
                   </div>
                   {collection.description ? (
-                    <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+                    <p className="mt-3 max-w-md line-clamp-2 text-sm leading-relaxed text-muted-foreground">
                       {collection.description}
                     </p>
                   ) : null}

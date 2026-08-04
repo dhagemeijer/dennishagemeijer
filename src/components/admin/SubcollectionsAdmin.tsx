@@ -146,7 +146,7 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-xl font-semibold">Subcollecties</h2>
+        <h2 className="font-display text-xl">Subcollecties</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" onClick={startCreate}>

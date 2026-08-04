@@ -104,7 +104,7 @@ export function CollectionsAdmin() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-xl font-semibold">Collecties</h2>
+        <h2 className="font-display text-xl">Collecties</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button onClick={startCreate}>
