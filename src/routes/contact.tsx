@@ -1,14 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Mail, MapPin, Instagram } from "lucide-react";
+import { Mail, MapPin, Instagram, CheckCircle2, AlertCircle } from "lucide-react";
 
 import { PageHeader } from "@/components/site/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { siteContentQuery } from "@/lib/queries";
+import { sendContactMessage } from "@/lib/contact.functions";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -35,13 +39,19 @@ const contactSchema = z.object({
   bericht: z.string().trim().min(10, "Schrijf een iets langer bericht").max(2000),
 });
 
-const EMAIL = "info@dennishagemeijerfotografie.nl";
+const FALLBACK_EMAIL = "dennimageai@gmail.com";
 
 function ContactPage() {
+  const { data: setting } = useQuery(siteContentQuery("contact_email"));
+  const EMAIL = setting?.body?.trim() || FALLBACK_EMAIL;
+  const send = useServerFn(sendContactMessage);
+
   const [values, setValues] = useState({ naam: "", email: "", bericht: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [statusMessage, setStatusMessage] = useState("");
 
-  const onSubmit = (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const result = contactSchema.safeParse(values);
     if (!result.success) {
@@ -53,10 +63,28 @@ function ContactPage() {
       return;
     }
     setErrors({});
-    const subject = encodeURIComponent(`Bericht via de website van ${result.data.naam}`);
-    const body = encodeURIComponent(`${result.data.bericht}\n\n— ${result.data.naam} (${result.data.email})`);
-    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
-    toast.success("Je mailprogramma wordt geopend om het bericht te versturen.");
+    setStatus("sending");
+    try {
+      const response = await send({ data: result.data });
+      if (response.ok) {
+        setStatus("success");
+        setStatusMessage("Bedankt! Je bericht is verstuurd, ik reageer zo snel mogelijk.");
+        setValues({ naam: "", email: "", bericht: "" });
+        toast.success("Bericht verstuurd");
+        return;
+      }
+      setStatus("error");
+      setStatusMessage(
+        `Het bericht kon nog niet automatisch verzonden worden. Mail rechtstreeks naar ${EMAIL}.`,
+      );
+      toast.error("Verzenden mislukt");
+    } catch {
+      setStatus("error");
+      setStatusMessage(
+        `Er ging iets mis bij het verzenden. Probeer het later opnieuw of mail naar ${EMAIL}.`,
+      );
+      toast.error("Verzenden mislukt");
+    }
   };
 
   return (
@@ -94,7 +122,10 @@ function ContactPage() {
           </div>
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-5 border border-border p-6 sm:p-8">
+        <form
+          onSubmit={(e) => void onSubmit(e)}
+          className="space-y-5 border border-border p-6 sm:p-8"
+        >
           <div className="space-y-2">
             <Label htmlFor="naam">Naam</Label>
             <Input
@@ -127,8 +158,25 @@ function ContactPage() {
             />
             {errors['bericht'] ? <p className="text-xs text-primary">{errors['bericht']}</p> : null}
           </div>
-          <Button type="submit" size="lg">
-            Verstuur bericht
+          {status === "success" || status === "error" ? (
+            <div
+              role="status"
+              className={`flex items-start gap-2 border p-3 text-sm ${
+                status === "success"
+                  ? "border-border text-foreground"
+                  : "border-primary text-primary"
+              }`}
+            >
+              {status === "success" ? (
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
+              ) : (
+                <AlertCircle className="mt-0.5 size-4 shrink-0" />
+              )}
+              <p>{statusMessage}</p>
+            </div>
+          ) : null}
+          <Button type="submit" size="lg" disabled={status === "sending"}>
+            {status === "sending" ? "Versturen…" : "Verstuur bericht"}
           </Button>
         </form>
       </div>
