@@ -17,7 +17,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { newsQuery, type NewsPost } from "@/lib/queries";
-import { formatDateNl } from "@/lib/photo";
+import { formatDateNl, photoUrl } from "@/lib/photo";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -26,7 +27,12 @@ export function NewsAdmin() {
   const { data: posts = [] } = useQuery(newsQuery);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<NewsPost | null>(null);
-  const [form, setForm] = useState({ title: "", body: "", published_at: today() });
+  const [form, setForm] = useState<{
+    title: string;
+    body: string;
+    published_at: string;
+    image_path: string | null;
+  }>({ title: "", body: "", published_at: today(), image_path: null });
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["news"] });
 
@@ -38,6 +44,7 @@ export function NewsAdmin() {
         title,
         body: form.body.trim(),
         published_at: form.published_at || today(),
+        image_path: form.image_path,
       };
       if (editing) {
         const { error } = await supabase.from("news_posts").update(payload).eq("id", editing.id);
@@ -51,7 +58,7 @@ export function NewsAdmin() {
       toast.success(editing ? "Bericht bijgewerkt" : "Bericht geplaatst");
       setOpen(false);
       setEditing(null);
-      setForm({ title: "", body: "", published_at: today() });
+      setForm({ title: "", body: "", published_at: today(), image_path: null });
       void refresh();
     },
     onError: (error: Error) => toast.error(error.message),
@@ -78,7 +85,7 @@ export function NewsAdmin() {
             <Button
               onClick={() => {
                 setEditing(null);
-                setForm({ title: "", body: "", published_at: today() });
+                setForm({ title: "", body: "", published_at: today(), image_path: null });
               }}
             >
               <Plus className="mr-2 size-4" /> Nieuw bericht
@@ -117,6 +124,12 @@ export function NewsAdmin() {
                   onChange={(e) => setForm((f) => ({ ...f, body: e.target.value }))}
                 />
               </div>
+              <ImageUploadField
+                label="Afbeelding (optioneel)"
+                value={form.image_path}
+                folder="nieuws"
+                onChange={(path) => setForm((f) => ({ ...f, image_path: path }))}
+              />
             </div>
             <DialogFooter>
               <Button onClick={() => save.mutate()} disabled={save.isPending}>
@@ -133,6 +146,13 @@ export function NewsAdmin() {
         <ul className="divide-y divide-border border-y border-border">
           {posts.map((post) => (
             <li key={post.id} className="flex items-start gap-4 py-4">
+              {post.image_path ? (
+                <img
+                  src={photoUrl(post.image_path) ?? ""}
+                  alt=""
+                  className="size-16 shrink-0 object-cover"
+                />
+              ) : null}
               <div className="min-w-0 flex-1">
                 <p className="font-medium">{post.title}</p>
                 <p className="text-xs text-muted-foreground">{formatDateNl(post.published_at)}</p>
@@ -148,6 +168,7 @@ export function NewsAdmin() {
                     title: post.title,
                     body: post.body,
                     published_at: post.published_at.slice(0, 10),
+                    image_path: post.image_path,
                   });
                   setOpen(true);
                 }}

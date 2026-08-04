@@ -142,19 +142,32 @@ function Home() {
           <p className="mt-8 text-sm text-muted-foreground">Er is nog geen nieuws geplaatst.</p>
         ) : (
           <ul className="mt-8 divide-y divide-border border-y border-border">
-            {news.slice(0, 5).map((post) => (
-              <li key={post.id} className="grid gap-2 py-8 md:grid-cols-[10rem_1fr] md:gap-8">
-                <time className="text-sm text-muted-foreground">
-                  {formatDateNl(post.published_at)}
-                </time>
-                <div>
-                  <h3 className="font-display text-xl font-semibold">{post.title}</h3>
-                  <p className="mt-2 leading-relaxed whitespace-pre-line text-muted-foreground">
-                    {post.body}
-                  </p>
-                </div>
-              </li>
-            ))}
+            {news.slice(0, 5).map((post) => {
+              const image = post.image_path ? photoUrl(post.image_path) : null;
+              return (
+                <li key={post.id} className="grid gap-4 py-8 md:grid-cols-[10rem_1fr] md:gap-8">
+                  <time className="text-sm text-muted-foreground">
+                    {formatDateNl(post.published_at)}
+                  </time>
+                  <div className="grid gap-4 sm:grid-cols-[14rem_1fr] sm:gap-6">
+                    {image ? (
+                      <img
+                        src={image}
+                        alt={post.title}
+                        loading="lazy"
+                        className="aspect-[4/3] w-full object-cover"
+                      />
+                    ) : null}
+                    <div>
+                      <h3 className="font-display text-xl font-semibold">{post.title}</h3>
+                      <p className="mt-2 line-clamp-4 leading-relaxed whitespace-pre-line text-muted-foreground">
+                        {post.body}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
