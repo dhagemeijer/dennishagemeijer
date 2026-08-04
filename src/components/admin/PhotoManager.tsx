@@ -1,13 +1,28 @@
 import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, ImageIcon, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, ImageIcon, Tags, Trash2, Upload } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { photoUrl } from "@/lib/photo";
-import { collectionPhotosQuery, subcollectionPhotosQuery, type Photo } from "@/lib/queries";
+import {
+  collectionPhotosQuery,
+  searchIndexQuery,
+  subcollectionPhotosQuery,
+  type Photo,
+} from "@/lib/queries";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { KeywordInput } from "@/components/admin/KeywordInput";
+import { keywordsError, normalizeKeywords } from "@/lib/keywords";
+import { allKeywords } from "@/lib/search";
 
 type Target = { collectionId: string; subcollectionId?: string };
 
@@ -15,6 +30,11 @@ export function PhotoManager({ target }: { target: Target }) {
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [keywordPhoto, setKeywordPhoto] = useState<Photo | null>(null);
+  const [draftKeywords, setDraftKeywords] = useState<string[]>([]);
+  const [showKeywordError, setShowKeywordError] = useState(false);
+  const { data: index } = useQuery(searchIndexQuery);
+  const suggestions = index ? allKeywords(index) : [];
 
   const query = target.subcollectionId
     ? subcollectionPhotosQuery(target.subcollectionId)
@@ -24,6 +44,7 @@ export function PhotoManager({ target }: { target: Target }) {
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: ["photos"] });
     void queryClient.invalidateQueries({ queryKey: ["collection-counts"] });
+    void queryClient.invalidateQueries({ queryKey: ["search-index"] });
   };
 
   const upload = async (files: FileList) => {
@@ -122,6 +143,29 @@ export function PhotoManager({ target }: { target: Target }) {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const saveKeywords = useMutation({
+    mutationFn: async () => {
+      if (!keywordPhoto) return;
+      const problem = keywordsError(draftKeywords);
+      if (problem) {
+        setShowKeywordError(true);
+        throw new Error(problem);
+      }
+      const { error } = await supabase
+        .from("photos")
+        .update({ keywords: normalizeKeywords(draftKeywords) })
+        .eq("id", keywordPhoto.id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => {
+      toast.success("Trefwoorden opgeslagen");
+      setKeywordPhoto(null);
+      setShowKeywordError(false);
+      refresh();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-3">
@@ -189,6 +233,18 @@ export function PhotoManager({ target }: { target: Target }) {
                   <Button
                     size="sm"
                     variant="outline"
+                    onClick={() => {
+                      setKeywordPhoto(photo);
+                      setDraftKeywords(photo.keywords ?? []);
+                      setShowKeywordError(false);
+                    }}
+                    title="Trefwoorden beheren"
+                  >
+                    <Tags className="mr-1 size-4" /> {(photo.keywords ?? []).length}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
                     onClick={() => setCover.mutate(photo)}
                     title="Gebruik als omslagfoto"
                   >
@@ -209,6 +265,31 @@ export function PhotoManager({ target }: { target: Target }) {
           ))}
         </ul>
       )}
+
+      <Dialog
+        open={keywordPhoto !== null}
+        onOpenChange={(open) => {
+          if (!open) setKeywordPhoto(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Trefwoorden — {keywordPhoto?.title || "Foto"}</DialogTitle>
+          </DialogHeader>
+          <KeywordInput
+            id="photo-keywords"
+            value={draftKeywords}
+            suggestions={suggestions}
+            showError={showKeywordError}
+            onChange={setDraftKeywords}
+          />
+          <DialogFooter>
+            <Button onClick={() => saveKeywords.mutate()} disabled={saveKeywords.isPending}>
+              Opslaan
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
