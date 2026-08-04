@@ -146,6 +146,13 @@ export function NewsAdmin() {
         <ul className="divide-y divide-border border-y border-border">
           {posts.map((post) => (
             <li key={post.id} className="flex items-start gap-4 py-4">
+              {post.image_path ? (
+                <img
+                  src={photoUrl(post.image_path) ?? ""}
+                  alt=""
+                  className="size-16 shrink-0 object-cover"
+                />
+              ) : null}
               <div className="min-w-0 flex-1">
                 <p className="font-medium">{post.title}</p>
                 <p className="text-xs text-muted-foreground">{formatDateNl(post.published_at)}</p>
