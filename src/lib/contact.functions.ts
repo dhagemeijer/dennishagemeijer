@@ -38,12 +38,8 @@ export const sendContactMessage = createServerFn({ method: "POST" })
 
     const recipient = setting?.body?.trim() || FALLBACK_RECIPIENT;
 
-    const emailModule = "@/lib/email-templates/send-email";
-    const result = await sendTemplateEmail("contact-notification", recipient, {
-      templateData: { naam: data.naam, email: data.email, bericht: data.bericht },
-      idempotencyKey: `contact-${data.email}-${Date.now()}`,
-    });
+    // E-mailverzending wordt geactiveerd zodra het afzenderdomein is ingesteld.
+    console.log("[contact] bericht ontvangen voor", recipient, "van", data.email);
 
-    if (!result.sent) return { ok: false as const, reason: result.reason ?? "unknown" };
-    return { ok: true as const };
+    return { ok: false as const, reason: "email_not_configured" as const, recipient };
   });
