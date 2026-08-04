@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import portret from "@/assets/portret.jpg";
+import portret from "@/assets/portret.png.asset.json";
 import { PageHeader } from "@/components/site/PageHeader";
 
 export const Route = createFileRoute("/over")({
