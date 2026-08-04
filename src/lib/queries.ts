@@ -215,3 +215,25 @@ export function collectionByIdQuery(id: string) {
     },
   });
 }
+
+export type SiteContent = {
+  key: string;
+  body: string;
+  image_path: string | null;
+  updated_at: string;
+};
+
+export function siteContentQuery(key: string) {
+  return queryOptions({
+    queryKey: ["site-content", key],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_content")
+        .select("*")
+        .eq("key", key)
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      return (data as SiteContent | null) ?? null;
+    },
+  });
+}

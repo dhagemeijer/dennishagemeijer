@@ -125,6 +125,30 @@ export type Database = {
           },
         ]
       }
+      site_content: {
+        Row: {
+          body: string
+          created_at: string
+          image_path: string | null
+          key: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          image_path?: string | null
+          key: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          image_path?: string | null
+          key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subcollections: {
         Row: {
           collection_id: string
