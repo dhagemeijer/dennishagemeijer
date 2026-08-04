@@ -180,7 +180,17 @@ export function CollectionsAdmin() {
                     foto&apos;s
                   </p>
                 </div>
-                <Button size="icon" variant="outline" aria-label="Bewerken" onClick={() => startEdit(collection)}>
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/admin/collectie/$id" params={{ id: collection.id }}>
+                    <Settings2 className="mr-2 size-4" /> Beheren
+                  </Link>
+                </Button>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  aria-label="Bewerken"
+                  onClick={() => startEdit(collection)}
+                >
                   <Pencil className="size-4" />
                 </Button>
                 <Button
