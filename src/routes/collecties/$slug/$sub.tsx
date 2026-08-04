@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { PhotoGrid } from "@/components/site/PhotoGrid";
 import {
   collectionBySlugQuery,
+  matchLabel,
   subcollectionPhotosQuery,
   subcollectionQuery,
 } from "@/lib/queries";
