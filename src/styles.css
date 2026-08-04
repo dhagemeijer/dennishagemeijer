@@ -148,13 +148,7 @@
   margin-inline: auto;
   width: 100%;
   max-width: 84rem;
-  padding-inline: 1.5rem;
-}
-
-@media (min-width: 1024px) {
-  @utility page-shell {
-    padding-inline: 3rem;
-  }
+  padding-inline: clamp(1.5rem, 4vw, 3rem);
 }
 
 @utility rule-accent {
