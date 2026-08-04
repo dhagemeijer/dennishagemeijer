@@ -78,7 +78,7 @@ export const collectionCountsQuery = queryOptions({
   queryFn: async () => {
     const [subs, photos] = await Promise.all([
       supabase.from("subcollections").select("id, collection_id"),
-      supabase.from("photos").select("id, collection_id"),
+      supabase.from("photos").select("id, collection_id").is("subcollection_id", null),
     ]);
     if (subs.error) throw new Error(subs.error.message);
     if (photos.error) throw new Error(photos.error.message);
