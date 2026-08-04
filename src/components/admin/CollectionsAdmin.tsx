@@ -20,6 +20,10 @@ import {
 import { collectionsQuery, collectionCountsQuery, type Collection } from "@/lib/queries";
 import { photoUrl, slugify } from "@/lib/photo";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { KeywordInput } from "@/components/admin/KeywordInput";
+import { keywordsError, normalizeKeywords } from "@/lib/keywords";
+import { searchIndexQuery } from "@/lib/queries";
+import { allKeywords } from "@/lib/search";
 
 export function CollectionsAdmin() {
   const queryClient = useQueryClient();
@@ -31,17 +35,28 @@ export function CollectionsAdmin() {
     name: string;
     description: string;
     cover: string | null;
-  }>({ name: "", description: "", cover: null });
+    keywords: string[];
+  }>({ name: "", description: "", cover: null, keywords: [] });
+  const [showKeywordError, setShowKeywordError] = useState(false);
+  const { data: index } = useQuery(searchIndexQuery);
+  const suggestions = index ? allKeywords(index) : [];
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: ["collections"] });
     void queryClient.invalidateQueries({ queryKey: ["collection-counts"] });
+    void queryClient.invalidateQueries({ queryKey: ["search-index"] });
   };
 
   const save = useMutation({
     mutationFn: async () => {
       const name = form.name.trim();
       if (name.length < 2) throw new Error("Vul een naam in");
+      const keywords = normalizeKeywords(form.keywords);
+      const keywordProblem = keywordsError(form.keywords);
+      if (keywordProblem) {
+        setShowKeywordError(true);
+        throw new Error(keywordProblem);
+      }
       if (editing) {
         const { error } = await supabase
           .from("collections")
@@ -49,6 +64,7 @@ export function CollectionsAdmin() {
             name,
             description: form.description.trim(),
             cover_photo_url: form.cover,
+            keywords,
           })
           .eq("id", editing.id);
         if (error) throw new Error(error.message);
@@ -59,6 +75,7 @@ export function CollectionsAdmin() {
         slug: slugify(name) || crypto.randomUUID().slice(0, 8),
         description: form.description.trim(),
         cover_photo_url: form.cover,
+        keywords,
         sort_order: collections.length,
       });
       if (error) throw new Error(error.message);
@@ -67,7 +84,8 @@ export function CollectionsAdmin() {
       toast.success(editing ? "Collectie bijgewerkt" : "Collectie aangemaakt");
       setOpen(false);
       setEditing(null);
-      setForm({ name: "", description: "", cover: null });
+      setForm({ name: "", description: "", cover: null, keywords: [] });
+      setShowKeywordError(false);
       refresh();
     },
     onError: (error: Error) => toast.error(error.message),
@@ -87,7 +105,8 @@ export function CollectionsAdmin() {
 
   const startCreate = () => {
     setEditing(null);
-    setForm({ name: "", description: "", cover: null });
+    setForm({ name: "", description: "", cover: null, keywords: [] });
+    setShowKeywordError(false);
     setOpen(true);
   };
 
@@ -97,7 +116,9 @@ export function CollectionsAdmin() {
       name: collection.name,
       description: collection.description,
       cover: collection.cover_photo_url,
+      keywords: collection.keywords ?? [],
     });
+    setShowKeywordError(false);
     setOpen(true);
   };
 
@@ -140,6 +161,13 @@ export function CollectionsAdmin() {
                 value={form.cover}
                 folder="covers/collecties"
                 onChange={(cover) => setForm((f) => ({ ...f, cover }))}
+              />
+              <KeywordInput
+                id="collection-keywords"
+                value={form.keywords}
+                suggestions={suggestions}
+                showError={showKeywordError}
+                onChange={(keywords) => setForm((f) => ({ ...f, keywords }))}
               />
             </div>
             <DialogFooter>

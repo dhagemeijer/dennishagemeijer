@@ -18,6 +18,14 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
     [photos.length],
   );
 
+  // Open the lightbox directly when arriving from search with a #foto-<id> hash.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash.startsWith("#foto-")) return;
+    const target = photos.findIndex((photo) => photo.id === hash.slice("#foto-".length));
+    if (target >= 0) setIndex(target);
+  }, [photos]);
+
   useEffect(() => {
     if (index === null) return;
     const onKey = (event: KeyboardEvent) => {
@@ -122,7 +130,11 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
             <span className="font-display text-base text-foreground">
               {active.title || "Zonder titel"}
             </span>
-            <span className="tracking-[0.14em] uppercase">{formatDateNl(active.created_at)}</span>
+            <span className="tracking-[0.14em] uppercase">
+              {[(active.keywords ?? []).join(" · "), formatDateNl(active.created_at)]
+                .filter(Boolean)
+                .join("  —  ")}
+            </span>
           </div>
         </div>
       ) : null}

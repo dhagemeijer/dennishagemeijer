@@ -20,11 +20,15 @@ import {
 import {
   matchLabel,
   subcollectionPhotoCountsQuery,
+  searchIndexQuery,
   subcollectionsQuery,
   type Subcollection,
 } from "@/lib/queries";
 import { formatDateNl, photoUrl, slugify } from "@/lib/photo";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { KeywordInput } from "@/components/admin/KeywordInput";
+import { keywordsError, normalizeKeywords } from "@/lib/keywords";
+import { allKeywords } from "@/lib/search";
 
 type Form = {
   name: string;
@@ -33,6 +37,7 @@ type Form = {
   home_team: string;
   away_team: string;
   cover: string | null;
+  keywords: string[];
 };
 
 const emptyForm: Form = {
@@ -42,6 +47,7 @@ const emptyForm: Form = {
   home_team: "",
   away_team: "",
   cover: null,
+  keywords: [],
 };
 
 export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) {
@@ -51,17 +57,26 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Subcollection | null>(null);
   const [form, setForm] = useState<Form>(emptyForm);
+  const [showKeywordError, setShowKeywordError] = useState(false);
+  const { data: index } = useQuery(searchIndexQuery);
+  const suggestions = index ? allKeywords(index) : [];
 
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: ["subcollections"] });
     void queryClient.invalidateQueries({ queryKey: ["subcollection-photo-counts"] });
     void queryClient.invalidateQueries({ queryKey: ["collection-counts"] });
+    void queryClient.invalidateQueries({ queryKey: ["search-index"] });
   };
 
   const save = useMutation({
     mutationFn: async () => {
       const name = form.name.trim();
       if (name.length < 2) throw new Error("Vul een naam in");
+      const keywordProblem = keywordsError(form.keywords);
+      if (keywordProblem) {
+        setShowKeywordError(true);
+        throw new Error(keywordProblem);
+      }
       const payload = {
         name,
         description: form.description.trim(),
@@ -69,6 +84,7 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
         home_team: form.home_team.trim() || null,
         away_team: form.away_team.trim() || null,
         cover_photo_url: form.cover,
+        keywords: normalizeKeywords(form.keywords),
       };
       if (editing) {
         const { error } = await supabase
@@ -91,6 +107,7 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
       setOpen(false);
       setEditing(null);
       setForm(emptyForm);
+      setShowKeywordError(false);
       refresh();
     },
     onError: (error: Error) => toast.error(error.message),
@@ -128,6 +145,7 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
   const startCreate = () => {
     setEditing(null);
     setForm(emptyForm);
+    setShowKeywordError(false);
   };
 
   const startEdit = (sub: Subcollection) => {
@@ -139,7 +157,9 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
       home_team: sub.home_team ?? "",
       away_team: sub.away_team ?? "",
       cover: sub.cover_photo_url,
+      keywords: sub.keywords ?? [],
     });
+    setShowKeywordError(false);
     setOpen(true);
   };
 
@@ -213,6 +233,13 @@ export function SubcollectionsAdmin({ collectionId }: { collectionId: string }) 
                 value={form.cover}
                 folder="covers/subcollecties"
                 onChange={(cover) => setForm((f) => ({ ...f, cover }))}
+              />
+              <KeywordInput
+                id="sub-keywords"
+                value={form.keywords}
+                suggestions={suggestions}
+                showError={showKeywordError}
+                onChange={(keywords) => setForm((f) => ({ ...f, keywords }))}
               />
             </div>
             <DialogFooter>

@@ -8,6 +8,7 @@ export type Collection = {
   description: string;
   cover_photo_url: string | null;
   sort_order: number;
+  keywords: string[];
   created_at: string;
 };
 
@@ -22,6 +23,7 @@ export type Subcollection = {
   away_team: string | null;
   cover_photo_url: string | null;
   sort_order: number;
+  keywords: string[];
   created_at: string;
 };
 
@@ -44,6 +46,7 @@ export type Photo = {
   storage_path: string;
   image_url: string;
   sort_order: number;
+  keywords: string[];
   is_featured: boolean;
   created_at: string;
 };
@@ -280,3 +283,26 @@ export function subcollectionPhotoCountsQuery(collectionId: string) {
     },
   });
 }
+
+export type SearchIndex = {
+  collections: Collection[];
+  subcollections: Subcollection[];
+  photos: Photo[];
+};
+
+/** Everything needed for keyword/title search and the admin keyword overview. */
+export const searchIndexQuery = queryOptions({
+  queryKey: ["search-index"],
+  queryFn: async (): Promise<SearchIndex> => {
+    const [collections, subcollections, photos] = await Promise.all([
+      supabase.from("collections").select("*").order("sort_order", { ascending: true }),
+      supabase.from("subcollections").select("*").order("sort_order", { ascending: true }),
+      supabase.from("photos").select("*").order("created_at", { ascending: false }),
+    ]);
+    return {
+      collections: unwrap<Collection[]>(collections),
+      subcollections: unwrap<Subcollection[]>(subcollections),
+      photos: unwrap<Photo[]>(photos),
+    };
+  },
+});

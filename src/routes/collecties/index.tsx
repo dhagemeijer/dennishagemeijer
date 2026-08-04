@@ -4,6 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/site/PageHeader";
 import { collectionsQuery, collectionCountsQuery } from "@/lib/queries";
 import { photoUrl } from "@/lib/photo";
+import { SiteSearch } from "@/components/site/SiteSearch";
 
 export const Route = createFileRoute("/collecties/")({
   head: () => ({
@@ -46,6 +47,10 @@ function CollectionsPage() {
         title="Collecties"
         description="Elke collectie bundelt werk rond één thema. Voetbal is verder opgedeeld per wedstrijd."
       />
+
+      <div className="page-shell pb-16">
+        <SiteSearch placeholder="Zoek in collecties en foto's" />
+      </div>
 
       <div className="page-shell">
         {collections.length === 0 ? (
