@@ -38,7 +38,7 @@ export const sendContactMessage = createServerFn({ method: "POST" })
 
     const recipient = setting?.body?.trim() || FALLBACK_RECIPIENT;
 
-    const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+    const emailModule = "@/lib/email-templates/send-email";
     const result = await sendTemplateEmail("contact-notification", recipient, {
       templateData: { naam: data.naam, email: data.email, bericht: data.bericht },
       idempotencyKey: `contact-${data.email}-${Date.now()}`,
