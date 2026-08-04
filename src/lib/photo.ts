@@ -1,7 +1,7 @@
 /** Public URL for a photo stored in the private "photos" bucket. */
 export function photoUrl(storagePath: string | null | undefined): string | null {
   if (!storagePath) return null;
-  if (storagePath.startsWith("http") || storagePath.startsWith("/api/")) return storagePath;
+  if (storagePath.startsWith("http") || storagePath.startsWith("/")) return storagePath;
   return `/api/public/img/${storagePath.split("/").map(encodeURIComponent).join("/")}`;
 }
 
