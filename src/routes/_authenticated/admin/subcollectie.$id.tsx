@@ -48,7 +48,9 @@ function AdminSubcollection() {
         </Link>
         <h1 className="mt-3 font-display text-3xl font-semibold">{sub.name}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {sub.event_date ? formatDateNl(sub.event_date) : "Geen datum"}
+          {[matchLabel(sub), sub.event_date ? formatDateNl(sub.event_date) : null]
+            .filter(Boolean)
+            .join(" · ") || "Geen wedstrijdgegevens"}
         </p>
       </div>
 
