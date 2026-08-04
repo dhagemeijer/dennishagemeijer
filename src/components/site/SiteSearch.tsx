@@ -97,7 +97,7 @@ export function SiteSearch({ placeholder }: { placeholder?: string }) {
       <div className="flex items-center gap-3 border-b border-border pb-3">
         <Search className="size-4 shrink-0 text-primary" />
         <input
-          type="search"
+          type="text"
           value={term}
           onChange={(e) => setTerm(e.target.value)}
           placeholder={placeholder ?? "Zoek op trefwoord, collectie of titel"}
