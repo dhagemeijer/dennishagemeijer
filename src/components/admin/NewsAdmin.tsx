@@ -85,7 +85,7 @@ export function NewsAdmin() {
             <Button
               onClick={() => {
                 setEditing(null);
-                setForm({ title: "", body: "", published_at: today() });
+                setForm({ title: "", body: "", published_at: today(), image_path: null });
               }}
             >
               <Plus className="mr-2 size-4" /> Nieuw bericht
