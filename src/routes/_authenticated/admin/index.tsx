@@ -37,7 +37,7 @@ function AdminDashboard() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Beheer</p>
-          <h1 className="font-display text-3xl font-semibold">Dashboard</h1>
+          <h1 className="font-display text-3xl">Dashboard</h1>
         </div>
         <Button variant="outline" onClick={() => void signOut()}>
           <LogOut className="mr-2 size-4" /> Uitloggen

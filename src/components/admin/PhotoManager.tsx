@@ -149,7 +149,7 @@ export function PhotoManager({ target }: { target: Target }) {
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {photos.map((photo, index) => (
-            <li key={photo.id} className="border border-border">
+            <li key={photo.id} className="overflow-hidden rounded-xl border border-border bg-card">
               <div className="aspect-[4/3] bg-muted">
                 <img
                   src={photoUrl(photo.storage_path) ?? ""}

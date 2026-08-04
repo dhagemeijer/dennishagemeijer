@@ -43,7 +43,7 @@ function AdminCollection() {
         <Link to="/admin" className="text-xs tracking-wider text-muted-foreground uppercase hover:text-primary">
           ← Dashboard
         </Link>
-        <h1 className="mt-3 font-display text-3xl font-semibold">{collection.name}</h1>
+        <h1 className="mt-3 font-display text-3xl">{collection.name}</h1>
         {collection.description ? (
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{collection.description}</p>
         ) : null}
@@ -52,7 +52,7 @@ function AdminCollection() {
       <SubcollectionsAdmin collectionId={collection.id} />
 
       <div className="space-y-6">
-        <h2 className="font-display text-xl font-semibold">Foto&apos;s direct in deze collectie</h2>
+        <h2 className="font-display text-xl">Foto&apos;s direct in deze collectie</h2>
         {subcollections.length > 0 ? (
           <p className="text-sm text-muted-foreground">
             Deze collectie heeft subcollecties, dus foto&apos;s horen daarin. Op de publieke pagina

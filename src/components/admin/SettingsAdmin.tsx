@@ -40,10 +40,10 @@ export function SettingsAdmin() {
     <section className="space-y-6">
       <div>
         <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Instellingen</p>
-        <h2 className="font-display text-2xl font-semibold">Contact</h2>
+        <h2 className="font-display text-2xl">Contact</h2>
       </div>
 
-      <div className="max-w-xl space-y-4 border border-border p-6">
+      <div className="max-w-xl space-y-4 rounded-xl border border-border bg-card p-8">
         <div className="space-y-2">
           <Label htmlFor="contact-email">Ontvanger contactformulier</Label>
           <Input
