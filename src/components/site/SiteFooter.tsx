@@ -12,7 +12,7 @@ export function SiteFooter() {
             loading="lazy"
             width={1780}
             height={844}
-            className="h-10 w-auto opacity-80"
+            className="h-16 w-auto opacity-80"
           />
           <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
             Macro, natuur, street en voetbal — vastgelegd in Nederland.
