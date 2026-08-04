@@ -122,7 +122,10 @@ function ContactPage() {
           </div>
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-5 border border-border p-6 sm:p-8">
+        <form
+          onSubmit={(e) => void onSubmit(e)}
+          className="space-y-5 border border-border p-6 sm:p-8"
+        >
           <div className="space-y-2">
             <Label htmlFor="naam">Naam</Label>
             <Input
