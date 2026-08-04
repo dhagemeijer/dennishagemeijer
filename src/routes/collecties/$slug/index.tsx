@@ -6,6 +6,8 @@ import { PhotoGrid } from "@/components/site/PhotoGrid";
 import {
   collectionBySlugQuery,
   collectionPhotosQuery,
+  matchLabel,
+  subcollectionPhotoCountsQuery,
   subcollectionsQuery,
 } from "@/lib/queries";
 import { photoUrl, formatDateNl } from "@/lib/photo";
@@ -19,6 +21,7 @@ export const Route = createFileRoute("/collecties/$slug/")({
     await Promise.all([
       context.queryClient.ensureQueryData(subcollectionsQuery(collection.id)),
       context.queryClient.ensureQueryData(collectionPhotosQuery(collection.id)),
+      context.queryClient.ensureQueryData(subcollectionPhotoCountsQuery(collection.id)),
     ]);
     return { collection };
   },
