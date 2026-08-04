@@ -250,3 +250,32 @@ export function siteContentQuery(key: string) {
     },
   });
 }
+
+/** Photo count per subcollection within one collection. */
+export function subcollectionPhotoCountsQuery(collectionId: string) {
+  return queryOptions({
+    queryKey: ["subcollection-photo-counts", collectionId],
+    queryFn: async () => {
+      const { data: subs, error: subsError } = await supabase
+        .from("subcollections")
+        .select("id")
+        .eq("collection_id", collectionId);
+      if (subsError) throw new Error(subsError.message);
+      const ids = (subs ?? []).map((s) => s.id as string);
+      const counts: Record<string, number> = {};
+      for (const id of ids) counts[id] = 0;
+      if (ids.length === 0) return counts;
+      const { data, error } = await supabase
+        .from("photos")
+        .select("id, subcollection_id")
+        .in("subcollection_id", ids);
+      if (error) throw new Error(error.message);
+      for (const row of data ?? []) {
+        const key = row.subcollection_id as string | null;
+        if (!key) continue;
+        counts[key] = (counts[key] ?? 0) + 1;
+      }
+      return counts;
+    },
+  });
+}
