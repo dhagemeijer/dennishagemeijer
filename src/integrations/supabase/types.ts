@@ -52,6 +52,7 @@ export type Database = {
           body: string
           created_at: string
           id: string
+          image_path: string | null
           published_at: string
           title: string
           updated_at: string
@@ -60,6 +61,7 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          image_path?: string | null
           published_at?: string
           title: string
           updated_at?: string
@@ -68,6 +70,7 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          image_path?: string | null
           published_at?: string
           title?: string
           updated_at?: string
