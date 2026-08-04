@@ -1,6 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut } from "lucide-react";
+import { LogOut, Tags } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -39,9 +39,16 @@ function AdminDashboard() {
           <p className="text-xs tracking-[0.2em] text-muted-foreground uppercase">Beheer</p>
           <h1 className="font-display text-3xl">Dashboard</h1>
         </div>
-        <Button variant="outline" onClick={() => void signOut()}>
-          <LogOut className="mr-2 size-4" /> Uitloggen
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" asChild>
+            <Link to="/admin/trefwoorden">
+              <Tags className="mr-2 size-4" /> Trefwoorden
+            </Link>
+          </Button>
+          <Button variant="outline" onClick={() => void signOut()}>
+            <LogOut className="mr-2 size-4" /> Uitloggen
+          </Button>
+        </div>
       </div>
 
       <CollectionsAdmin />
