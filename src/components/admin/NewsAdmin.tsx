@@ -44,6 +44,7 @@ export function NewsAdmin() {
         title,
         body: form.body.trim(),
         published_at: form.published_at || today(),
+        image_path: form.image_path,
       };
       if (editing) {
         const { error } = await supabase.from("news_posts").update(payload).eq("id", editing.id);
