@@ -1,14 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Mail, MapPin, Instagram } from "lucide-react";
+import { Mail, MapPin, Instagram, CheckCircle2, AlertCircle } from "lucide-react";
 
 import { PageHeader } from "@/components/site/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { siteContentQuery } from "@/lib/queries";
+import { sendContactMessage } from "@/lib/contact.functions";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -35,13 +39,19 @@ const contactSchema = z.object({
   bericht: z.string().trim().min(10, "Schrijf een iets langer bericht").max(2000),
 });
 
-const EMAIL = "info@dennishagemeijerfotografie.nl";
+const FALLBACK_EMAIL = "dennimageai@gmail.com";
 
 function ContactPage() {
+  const { data: setting } = useQuery(siteContentQuery("contact_email"));
+  const EMAIL = setting?.body?.trim() || FALLBACK_EMAIL;
+  const send = useServerFn(sendContactMessage);
+
   const [values, setValues] = useState({ naam: "", email: "", bericht: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [statusMessage, setStatusMessage] = useState("");
 
-  const onSubmit = (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const result = contactSchema.safeParse(values);
     if (!result.success) {
@@ -53,10 +63,28 @@ function ContactPage() {
       return;
     }
     setErrors({});
-    const subject = encodeURIComponent(`Bericht via de website van ${result.data.naam}`);
-    const body = encodeURIComponent(`${result.data.bericht}\n\n— ${result.data.naam} (${result.data.email})`);
-    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
-    toast.success("Je mailprogramma wordt geopend om het bericht te versturen.");
+    setStatus("sending");
+    try {
+      const response = await send({ data: result.data });
+      if (response.ok) {
+        setStatus("success");
+        setStatusMessage("Bedankt! Je bericht is verstuurd, ik reageer zo snel mogelijk.");
+        setValues({ naam: "", email: "", bericht: "" });
+        toast.success("Bericht verstuurd");
+        return;
+      }
+      setStatus("error");
+      setStatusMessage(
+        `Het bericht kon nog niet automatisch verzonden worden. Mail rechtstreeks naar ${EMAIL}.`,
+      );
+      toast.error("Verzenden mislukt");
+    } catch {
+      setStatus("error");
+      setStatusMessage(
+        `Er ging iets mis bij het verzenden. Probeer het later opnieuw of mail naar ${EMAIL}.`,
+      );
+      toast.error("Verzenden mislukt");
+    }
   };
 
   return (
