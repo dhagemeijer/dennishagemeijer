@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { subcollectionByIdQuery } from "@/lib/queries";
+import { matchLabel, subcollectionByIdQuery } from "@/lib/queries";
 import { PhotoManager } from "@/components/admin/PhotoManager";
 import { formatDateNl } from "@/lib/photo";
 
