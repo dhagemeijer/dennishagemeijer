@@ -34,9 +34,9 @@ export function SiteHeader() {
           <img
             src={wordmark}
             alt="Dennis Hagemeijer Fotografie"
-            width={983}
-            height={223}
-            className="h-9 w-auto opacity-90 transition-opacity duration-300 hover:opacity-100 sm:h-11"
+            width={1780}
+            height={844}
+            className="h-14 w-auto opacity-90 transition-opacity duration-300 hover:opacity-100 sm:h-16"
           />
         </Link>
 

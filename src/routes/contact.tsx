@@ -102,8 +102,8 @@ function ContactPage() {
             src={wordmark}
             alt="Dennis Hagemeijer Fotografie"
             loading="lazy"
-            width={983}
-            height={223}
+            width={1780}
+            height={844}
             className="h-10 w-auto opacity-80"
           />
           <div className="flex items-start gap-3">
