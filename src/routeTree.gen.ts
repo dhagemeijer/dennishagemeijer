@@ -21,6 +21,7 @@ import { Route as CollectiesSlugIndexRouteImport } from './routes/collecties/$sl
 import { Route as CollectiesSlugSubRouteImport } from './routes/collecties/$slug/$sub'
 import { Route as AuthenticatedAdminCollectieIdRouteImport } from './routes/_authenticated/admin/collectie.$id'
 import { Route as AuthenticatedAdminSubcollectieIdRouteImport } from './routes/_authenticated/admin/subcollectie.$id'
+import { Route as ApiPublicDownloadSplatRouteImport } from './routes/api/public/download/$'
 import { Route as ApiPublicImgSplatRouteImport } from './routes/api/public/img/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -85,6 +86,11 @@ const AuthenticatedAdminSubcollectieIdRoute =
     path: '/admin/subcollectie/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicDownloadSplatRoute = ApiPublicDownloadSplatRouteImport.update({
+  id: '/api/public/download/$',
+  path: '/api/public/download/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicImgSplatRoute = ApiPublicImgSplatRouteImport.update({
   id: '/api/public/img/$',
   path: '/api/public/img/$',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/collecties/$slug/': typeof CollectiesSlugIndexRoute
   '/admin/collectie/$id': typeof AuthenticatedAdminCollectieIdRoute
   '/admin/subcollectie/$id': typeof AuthenticatedAdminSubcollectieIdRoute
+  '/api/public/download/$': typeof ApiPublicDownloadSplatRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/collecties/$slug': typeof CollectiesSlugIndexRoute
   '/admin/collectie/$id': typeof AuthenticatedAdminCollectieIdRoute
   '/admin/subcollectie/$id': typeof AuthenticatedAdminSubcollectieIdRoute
+  '/api/public/download/$': typeof ApiPublicDownloadSplatRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRoutesById {
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/collecties/$slug/': typeof CollectiesSlugIndexRoute
   '/_authenticated/admin/collectie/$id': typeof AuthenticatedAdminCollectieIdRoute
   '/_authenticated/admin/subcollectie/$id': typeof AuthenticatedAdminSubcollectieIdRoute
+  '/api/public/download/$': typeof ApiPublicDownloadSplatRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRouteTypes {
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/collecties/$slug/'
     | '/admin/collectie/$id'
     | '/admin/subcollectie/$id'
+    | '/api/public/download/$'
     | '/api/public/img/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/collecties/$slug'
     | '/admin/collectie/$id'
     | '/admin/subcollectie/$id'
+    | '/api/public/download/$'
     | '/api/public/img/$'
   id:
     | '__root__'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/collecties/$slug/'
     | '/_authenticated/admin/collectie/$id'
     | '/_authenticated/admin/subcollectie/$id'
+    | '/api/public/download/$'
     | '/api/public/img/$'
   fileRoutesById: FileRoutesById
 }
@@ -190,6 +202,7 @@ export interface RootRouteChildren {
   CollectiesIndexRoute: typeof CollectiesIndexRoute
   CollectiesSlugSubRoute: typeof CollectiesSlugSubRoute
   CollectiesSlugIndexRoute: typeof CollectiesSlugIndexRoute
+  ApiPublicDownloadSplatRoute: typeof ApiPublicDownloadSplatRoute
   ApiPublicImgSplatRoute: typeof ApiPublicImgSplatRoute
 }
 
@@ -279,6 +292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSubcollectieIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/download/$': {
+      id: '/api/public/download/$'
+      path: '/api/public/download/$'
+      fullPath: '/api/public/download/$'
+      preLoaderRoute: typeof ApiPublicDownloadSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/img/$': {
       id: '/api/public/img/$'
       path: '/api/public/img/$'
@@ -315,6 +335,7 @@ const rootRouteChildren: RootRouteChildren = {
   CollectiesIndexRoute: CollectiesIndexRoute,
   CollectiesSlugSubRoute: CollectiesSlugSubRoute,
   CollectiesSlugIndexRoute: CollectiesSlugIndexRoute,
+  ApiPublicDownloadSplatRoute: ApiPublicDownloadSplatRoute,
   ApiPublicImgSplatRoute: ApiPublicImgSplatRoute,
 }
 export const routeTree = rootRouteImport
