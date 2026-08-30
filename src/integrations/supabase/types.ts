@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.15"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -50,6 +50,54 @@ export type Database = {
         }
         Relationships: []
       }
+      download_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          order_id: string
+          photo_id: string | null
+          storage_path: string
+          token: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          order_id: string
+          photo_id?: string | null
+          storage_path?: string
+          token: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          order_id?: string
+          photo_id?: string | null
+          storage_path?: string
+          token?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "download_tokens_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "download_tokens_photo_id_fkey"
+            columns: ["photo_id"]
+            isOneToOne: false
+            referencedRelation: "photos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news_posts: {
         Row: {
           body: string
@@ -76,6 +124,93 @@ export type Database = {
           image_path?: string | null
           published_at?: string
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          photo_id: string | null
+          price_cents: number
+          storage_path: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          photo_id?: string | null
+          price_cents?: number
+          storage_path?: string
+          title?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          photo_id?: string | null
+          price_cents?: number
+          storage_path?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_photo_id_fkey"
+            columns: ["photo_id"]
+            isOneToOne: false
+            referencedRelation: "photos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          notes: string
+          paid_at: string | null
+          photo_count: number
+          status: string
+          total_cents: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id?: string
+          notes?: string
+          paid_at?: string | null
+          photo_count?: number
+          status?: string
+          total_cents?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          notes?: string
+          paid_at?: string | null
+          photo_count?: number
+          status?: string
+          total_cents?: number
           updated_at?: string
         }
         Relationships: []

@@ -12,15 +12,19 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BestellenRouteImport } from './routes/bestellen'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as OverRouteImport } from './routes/over'
 import { Route as CollectiesIndexRouteImport } from './routes/collecties/index'
+import { Route as DownloadTokenRouteImport } from './routes/download.$token'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminTrefwoordenRouteImport } from './routes/_authenticated/admin/trefwoorden'
 import { Route as CollectiesSlugIndexRouteImport } from './routes/collecties/$slug/index'
 import { Route as CollectiesSlugSubRouteImport } from './routes/collecties/$slug/$sub'
+import { Route as AuthenticatedAdminBestellingIdRouteImport } from './routes/_authenticated/admin/bestelling.$id'
 import { Route as AuthenticatedAdminCollectieIdRouteImport } from './routes/_authenticated/admin/collectie.$id'
 import { Route as AuthenticatedAdminSubcollectieIdRouteImport } from './routes/_authenticated/admin/subcollectie.$id'
+import { Route as ApiPublicDownloadSplatRouteImport } from './routes/api/public/download/$'
 import { Route as ApiPublicImgSplatRouteImport } from './routes/api/public/img/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -37,6 +41,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BestellenRoute = BestellenRouteImport.update({
+  id: '/bestellen',
+  path: '/bestellen',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -50,6 +59,11 @@ const OverRoute = OverRouteImport.update({
 const CollectiesIndexRoute = CollectiesIndexRouteImport.update({
   id: '/collecties/',
   path: '/collecties/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadTokenRoute = DownloadTokenRouteImport.update({
+  id: '/download/$token',
+  path: '/download/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -73,6 +87,12 @@ const CollectiesSlugSubRoute = CollectiesSlugSubRouteImport.update({
   path: '/collecties/$slug/$sub',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminBestellingIdRoute =
+  AuthenticatedAdminBestellingIdRouteImport.update({
+    id: '/admin/bestelling/$id',
+    path: '/admin/bestelling/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminCollectieIdRoute =
   AuthenticatedAdminCollectieIdRouteImport.update({
     id: '/admin/collectie/$id',
@@ -85,6 +105,11 @@ const AuthenticatedAdminSubcollectieIdRoute =
     path: '/admin/subcollectie/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicDownloadSplatRoute = ApiPublicDownloadSplatRouteImport.update({
+  id: '/api/public/download/$',
+  path: '/api/public/download/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicImgSplatRoute = ApiPublicImgSplatRouteImport.update({
   id: '/api/public/img/$',
   path: '/api/public/img/$',
@@ -94,29 +119,37 @@ const ApiPublicImgSplatRoute = ApiPublicImgSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/bestellen': typeof BestellenRoute
   '/contact': typeof ContactRoute
   '/over': typeof OverRoute
+  '/download/$token': typeof DownloadTokenRoute
   '/collecties/': typeof CollectiesIndexRoute
   '/admin/trefwoorden': typeof AuthenticatedAdminTrefwoordenRoute
   '/collecties/$slug/$sub': typeof CollectiesSlugSubRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/collecties/$slug/': typeof CollectiesSlugIndexRoute
+  '/admin/bestelling/$id': typeof AuthenticatedAdminBestellingIdRoute
   '/admin/collectie/$id': typeof AuthenticatedAdminCollectieIdRoute
   '/admin/subcollectie/$id': typeof AuthenticatedAdminSubcollectieIdRoute
+  '/api/public/download/$': typeof ApiPublicDownloadSplatRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/bestellen': typeof BestellenRoute
   '/contact': typeof ContactRoute
   '/over': typeof OverRoute
+  '/download/$token': typeof DownloadTokenRoute
   '/collecties': typeof CollectiesIndexRoute
   '/admin/trefwoorden': typeof AuthenticatedAdminTrefwoordenRoute
   '/collecties/$slug/$sub': typeof CollectiesSlugSubRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/collecties/$slug': typeof CollectiesSlugIndexRoute
+  '/admin/bestelling/$id': typeof AuthenticatedAdminBestellingIdRoute
   '/admin/collectie/$id': typeof AuthenticatedAdminCollectieIdRoute
   '/admin/subcollectie/$id': typeof AuthenticatedAdminSubcollectieIdRoute
+  '/api/public/download/$': typeof ApiPublicDownloadSplatRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRoutesById {
@@ -124,15 +157,19 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/bestellen': typeof BestellenRoute
   '/contact': typeof ContactRoute
   '/over': typeof OverRoute
+  '/download/$token': typeof DownloadTokenRoute
   '/collecties/': typeof CollectiesIndexRoute
   '/_authenticated/admin/trefwoorden': typeof AuthenticatedAdminTrefwoordenRoute
   '/collecties/$slug/$sub': typeof CollectiesSlugSubRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/collecties/$slug/': typeof CollectiesSlugIndexRoute
+  '/_authenticated/admin/bestelling/$id': typeof AuthenticatedAdminBestellingIdRoute
   '/_authenticated/admin/collectie/$id': typeof AuthenticatedAdminCollectieIdRoute
   '/_authenticated/admin/subcollectie/$id': typeof AuthenticatedAdminSubcollectieIdRoute
+  '/api/public/download/$': typeof ApiPublicDownloadSplatRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
 }
 export interface FileRouteTypes {
@@ -140,44 +177,56 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/bestellen'
     | '/contact'
     | '/over'
+    | '/download/$token'
     | '/collecties/'
     | '/admin/trefwoorden'
     | '/collecties/$slug/$sub'
     | '/admin/'
     | '/collecties/$slug/'
+    | '/admin/bestelling/$id'
     | '/admin/collectie/$id'
     | '/admin/subcollectie/$id'
+    | '/api/public/download/$'
     | '/api/public/img/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/bestellen'
     | '/contact'
     | '/over'
+    | '/download/$token'
     | '/collecties'
     | '/admin/trefwoorden'
     | '/collecties/$slug/$sub'
     | '/admin'
     | '/collecties/$slug'
+    | '/admin/bestelling/$id'
     | '/admin/collectie/$id'
     | '/admin/subcollectie/$id'
+    | '/api/public/download/$'
     | '/api/public/img/$'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/bestellen'
     | '/contact'
     | '/over'
+    | '/download/$token'
     | '/collecties/'
     | '/_authenticated/admin/trefwoorden'
     | '/collecties/$slug/$sub'
     | '/_authenticated/admin/'
     | '/collecties/$slug/'
+    | '/_authenticated/admin/bestelling/$id'
     | '/_authenticated/admin/collectie/$id'
     | '/_authenticated/admin/subcollectie/$id'
+    | '/api/public/download/$'
     | '/api/public/img/$'
   fileRoutesById: FileRoutesById
 }
@@ -185,11 +234,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  BestellenRoute: typeof BestellenRoute
   ContactRoute: typeof ContactRoute
   OverRoute: typeof OverRoute
+  DownloadTokenRoute: typeof DownloadTokenRoute
   CollectiesIndexRoute: typeof CollectiesIndexRoute
   CollectiesSlugSubRoute: typeof CollectiesSlugSubRoute
   CollectiesSlugIndexRoute: typeof CollectiesSlugIndexRoute
+  ApiPublicDownloadSplatRoute: typeof ApiPublicDownloadSplatRoute
   ApiPublicImgSplatRoute: typeof ApiPublicImgSplatRoute
 }
 
@@ -216,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bestellen': {
+      id: '/bestellen'
+      path: '/bestellen'
+      fullPath: '/bestellen'
+      preLoaderRoute: typeof BestellenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -235,6 +294,13 @@ declare module '@tanstack/react-router' {
       path: '/collecties'
       fullPath: '/collecties/'
       preLoaderRoute: typeof CollectiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/download/$token': {
+      id: '/download/$token'
+      path: '/download/$token'
+      fullPath: '/download/$token'
+      preLoaderRoute: typeof DownloadTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -265,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CollectiesSlugSubRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/bestelling/$id': {
+      id: '/_authenticated/admin/bestelling/$id'
+      path: '/admin/bestelling/$id'
+      fullPath: '/admin/bestelling/$id'
+      preLoaderRoute: typeof AuthenticatedAdminBestellingIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/collectie/$id': {
       id: '/_authenticated/admin/collectie/$id'
       path: '/admin/collectie/$id'
@@ -279,6 +352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSubcollectieIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/download/$': {
+      id: '/api/public/download/$'
+      path: '/api/public/download/$'
+      fullPath: '/api/public/download/$'
+      preLoaderRoute: typeof ApiPublicDownloadSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/img/$': {
       id: '/api/public/img/$'
       path: '/api/public/img/$'
@@ -292,6 +372,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminTrefwoordenRoute: typeof AuthenticatedAdminTrefwoordenRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminBestellingIdRoute: typeof AuthenticatedAdminBestellingIdRoute
   AuthenticatedAdminCollectieIdRoute: typeof AuthenticatedAdminCollectieIdRoute
   AuthenticatedAdminSubcollectieIdRoute: typeof AuthenticatedAdminSubcollectieIdRoute
 }
@@ -299,6 +380,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminTrefwoordenRoute: AuthenticatedAdminTrefwoordenRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminBestellingIdRoute: AuthenticatedAdminBestellingIdRoute,
   AuthenticatedAdminCollectieIdRoute: AuthenticatedAdminCollectieIdRoute,
   AuthenticatedAdminSubcollectieIdRoute: AuthenticatedAdminSubcollectieIdRoute,
 }
@@ -310,13 +392,26 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  BestellenRoute: BestellenRoute,
   ContactRoute: ContactRoute,
   OverRoute: OverRoute,
+  DownloadTokenRoute: DownloadTokenRoute,
   CollectiesIndexRoute: CollectiesIndexRoute,
   CollectiesSlugSubRoute: CollectiesSlugSubRoute,
   CollectiesSlugIndexRoute: CollectiesSlugIndexRoute,
+  ApiPublicDownloadSplatRoute: ApiPublicDownloadSplatRoute,
   ApiPublicImgSplatRoute: ApiPublicImgSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
