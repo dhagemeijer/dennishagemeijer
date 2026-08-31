@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-react";
 
-import monogram from "@/assets/monogram.png";
+import { ProtectedPhoto } from "@/components/site/ProtectedPhoto";
 import { toggleBasket, useBasket } from "@/lib/basket";
 import { photoUrl, formatDateNl } from "@/lib/photo";
 import type { Photo } from "@/lib/queries";
+
 
 export function PhotoGrid({ photos }: { photos: Photo[] }) {
   const [index, setIndex] = useState<number | null>(null);
