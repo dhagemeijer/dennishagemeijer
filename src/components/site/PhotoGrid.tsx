@@ -1,13 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-react";
 
 import monogram from "@/assets/monogram.png";
+import { toggleBasket, useBasket } from "@/lib/basket";
 import { photoUrl, formatDateNl } from "@/lib/photo";
 import type { Photo } from "@/lib/queries";
 
 export function PhotoGrid({ photos }: { photos: Photo[] }) {
   const [index, setIndex] = useState<number | null>(null);
   const active = index === null ? null : photos[index];
+  const basket = useBasket();
+  const selectedIds = new Set(basket.map((item) => item.id));
+
+  const select = (photo: Photo) =>
+    toggleBasket({ id: photo.id, title: photo.title ?? "", storage_path: photo.storage_path });
 
   const close = useCallback(() => setIndex(null), []);
   const step = useCallback(
@@ -54,13 +60,15 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
       <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 [&>*]:mb-6">
         {photos.map((photo, i) => {
           const src = photoUrl(photo.storage_path);
+          const chosen = selectedIds.has(photo.id);
           return (
-            <button
-              key={photo.id}
-              type="button"
-              onClick={() => setIndex(i)}
-              className="group relative block w-full overflow-hidden bg-card"
-            >
+            <div key={photo.id} className="group relative block w-full overflow-hidden bg-card">
+              <button
+                type="button"
+                onClick={() => setIndex(i)}
+                aria-label={photo.title || "Foto bekijken"}
+                className="block w-full"
+              >
               {src ? (
                 <img
                   src={src}
@@ -76,7 +84,21 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
                 loading="lazy"
                 className="pointer-events-none absolute right-3 bottom-3 h-4 w-auto opacity-0 transition-opacity duration-300 group-hover:opacity-40"
               />
-            </button>
+              </button>
+              <button
+                type="button"
+                onClick={() => select(photo)}
+                aria-label={chosen ? "Uit selectie verwijderen" : "Toevoegen aan selectie"}
+                className={`absolute top-3 left-3 flex items-center gap-2 border px-3 py-2 text-[0.625rem] tracking-[0.18em] uppercase transition-all duration-300 ${
+                  chosen
+                    ? "border-primary bg-background/85 text-foreground opacity-100"
+                    : "border-border bg-background/70 text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-foreground focus-visible:opacity-100"
+                }`}
+              >
+                {chosen ? <Check className="size-3.5" /> : <Plus className="size-3.5" />}
+                {chosen ? "Gekozen" : "Selecteer"}
+              </button>
+            </div>
           );
         })}
       </div>
@@ -135,6 +157,18 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
                 .filter(Boolean)
                 .join("  —  ")}
             </span>
+            <button
+              type="button"
+              onClick={() => select(active)}
+              className={`flex h-12 items-center gap-2 border px-5 text-[0.6875rem] tracking-[0.2em] uppercase transition-colors duration-300 ${
+                selectedIds.has(active.id)
+                  ? "border-primary text-foreground"
+                  : "border-border text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {selectedIds.has(active.id) ? <Check className="size-4" /> : <Plus className="size-4" />}
+              {selectedIds.has(active.id) ? "In je selectie" : "Toevoegen aan selectie"}
+            </button>
           </div>
         </div>
       ) : null}

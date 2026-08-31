@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, ShoppingBag, X } from "lucide-react";
+import { useBasket } from "@/lib/basket";
 import { useAuth } from "@/hooks/useAuth";
 import wordmark from "@/assets/wordmark.png";
 
@@ -13,6 +14,7 @@ const navItems = [
 
 export function SiteHeader() {
   const { user, isAdmin } = useAuth();
+  const basketCount = useBasket().length;
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -52,6 +54,17 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <Link
+            to="/bestellen"
+            aria-label={`Selectie (${basketCount})`}
+            className="relative flex items-center gap-2 text-[0.6875rem] tracking-[0.22em] text-muted-foreground uppercase transition-colors duration-300 hover:text-foreground"
+            activeProps={{ className: "text-foreground" }}
+          >
+            <ShoppingBag className="size-4" />
+            {basketCount > 0 ? (
+              <span className="text-primary">{basketCount}</span>
+            ) : null}
+          </Link>
           {isAdmin ? (
             <Link
               to="/admin"
@@ -94,6 +107,13 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            <Link
+              to="/bestellen"
+              onClick={() => setOpen(false)}
+              className="py-3 text-[0.6875rem] tracking-[0.22em] text-muted-foreground uppercase"
+            >
+              Selectie{basketCount > 0 ? ` (${basketCount})` : ""}
+            </Link>
             <Link
               to={isAdmin ? "/admin" : "/auth"}
               onClick={() => setOpen(false)}

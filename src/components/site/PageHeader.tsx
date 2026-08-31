@@ -5,7 +5,7 @@ export function PageHeader({
 }: {
   eyebrow: string;
   title: string;
-  description?: string;
+  description?: string | undefined;
 }) {
   return (
     <header className="page-shell fade-up pt-20 pb-16 sm:pt-28">
