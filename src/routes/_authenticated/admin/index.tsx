@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { CollectionsAdmin } from "@/components/admin/CollectionsAdmin";
 import { NewsAdmin } from "@/components/admin/NewsAdmin";
+import { OrdersAdmin } from "@/components/admin/OrdersAdmin";
 import { SettingsAdmin } from "@/components/admin/SettingsAdmin";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
@@ -51,6 +52,7 @@ function AdminDashboard() {
         </div>
       </div>
 
+      <OrdersAdmin />
       <CollectionsAdmin />
       <NewsAdmin />
       <SettingsAdmin />
