@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Check, ChevronLeft, ChevronRight, Plus, X } from "lucide-react";
 
-import monogram from "@/assets/monogram.png";
+import { ProtectedPhoto } from "@/components/site/ProtectedPhoto";
 import { toggleBasket, useBasket } from "@/lib/basket";
 import { photoUrl, formatDateNl } from "@/lib/photo";
 import type { Photo } from "@/lib/queries";
+
 
 export function PhotoGrid({ photos }: { photos: Photo[] }) {
   const [index, setIndex] = useState<number | null>(null);
@@ -70,21 +71,14 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
                 className="block w-full"
               >
               {src ? (
-                <img
+                <ProtectedPhoto
                   src={src}
                   alt={photo.title || "Foto"}
-                  loading="lazy"
                   className="w-full object-cover opacity-95 transition-all duration-[350ms] ease-out group-hover:scale-[1.02] group-hover:opacity-100"
                 />
               ) : null}
-              <img
-                src={monogram}
-                alt=""
-                aria-hidden="true"
-                loading="lazy"
-                className="pointer-events-none absolute right-3 bottom-3 h-4 w-auto opacity-0 transition-opacity duration-300 group-hover:opacity-40"
-              />
               </button>
+
               <button
                 type="button"
                 onClick={() => select(photo)}
@@ -133,11 +127,15 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
             >
               <ChevronLeft className="size-7" />
             </button>
-            <img
+            <ProtectedPhoto
               src={photoUrl(active.storage_path) ?? ""}
               alt={active.title || "Foto"}
+              loading="eager"
+              watermark="full"
+              wrapperClassName="max-h-[82vh] max-w-full"
               className="max-h-[82vh] max-w-full object-contain"
             />
+
             <button
               type="button"
               onClick={() => step(1)}
