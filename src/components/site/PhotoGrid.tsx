@@ -127,11 +127,15 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
             >
               <ChevronLeft className="size-7" />
             </button>
-            <img
+            <ProtectedPhoto
               src={photoUrl(active.storage_path) ?? ""}
               alt={active.title || "Foto"}
+              loading="eager"
+              watermark="full"
+              wrapperClassName="max-h-[82vh] max-w-full"
               className="max-h-[82vh] max-w-full object-contain"
             />
+
             <button
               type="button"
               onClick={() => step(1)}
