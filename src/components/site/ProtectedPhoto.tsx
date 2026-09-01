@@ -1,4 +1,6 @@
-import monogram from "@/assets/monogram.png";
+import watermarkAsset from "@/assets/watermark.png.asset.json";
+
+const watermarkSrc = watermarkAsset.url;
 
 type ProtectedPhotoProps = {
   src: string;
@@ -39,29 +41,29 @@ export function ProtectedPhoto({
 
       {watermark === "corner" ? (
         <img
-          src={monogram}
+          src={watermarkSrc}
           alt=""
           aria-hidden="true"
           draggable={false}
-          className="pointer-events-none absolute right-3 bottom-3 h-5 w-auto opacity-55 mix-blend-screen"
+          className="pointer-events-none absolute bottom-4 left-1/2 w-[55%] max-w-[220px] -translate-x-1/2 opacity-80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.65)]"
         />
       ) : null}
 
       {watermark === "full" ? (
         <>
           <img
-            src={monogram}
+            src={watermarkSrc}
             alt=""
             aria-hidden="true"
             draggable={false}
-            className="pointer-events-none absolute inset-0 m-auto h-1/4 w-auto opacity-[0.14]"
+            className="pointer-events-none absolute inset-0 m-auto w-1/2 max-w-[420px] opacity-25"
           />
           <img
-            src={monogram}
+            src={watermarkSrc}
             alt=""
             aria-hidden="true"
             draggable={false}
-            className="pointer-events-none absolute right-4 bottom-4 h-7 w-auto opacity-60 mix-blend-screen"
+            className="pointer-events-none absolute bottom-5 left-1/2 w-[30%] max-w-[240px] -translate-x-1/2 opacity-85 drop-shadow-[0_1px_6px_rgba(0,0,0,0.65)]"
           />
         </>
       ) : null}
