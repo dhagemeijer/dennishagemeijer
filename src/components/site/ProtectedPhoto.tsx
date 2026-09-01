@@ -1,6 +1,6 @@
 import watermarkAsset from "@/assets/watermark.png.asset.json";
 
-const watermark = watermarkAsset.url;
+const watermarkSrc = watermarkAsset.url;
 
 type ProtectedPhotoProps = {
   src: string;
@@ -41,7 +41,7 @@ export function ProtectedPhoto({
 
       {watermark === "corner" ? (
         <img
-          src={watermark}
+          src={watermarkSrc}
           alt=""
           aria-hidden="true"
           draggable={false}
@@ -52,14 +52,14 @@ export function ProtectedPhoto({
       {watermark === "full" ? (
         <>
           <img
-            src={watermark}
+            src={watermarkSrc}
             alt=""
             aria-hidden="true"
             draggable={false}
             className="pointer-events-none absolute inset-0 m-auto w-1/2 max-w-[420px] opacity-25"
           />
           <img
-            src={watermark}
+            src={watermarkSrc}
             alt=""
             aria-hidden="true"
             draggable={false}
