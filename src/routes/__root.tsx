@@ -144,6 +144,26 @@ function RootComponent() {
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
 
+  // Deterrent tegen opslaan/kopiëren van foto's: rechtermuisknop en slepen uit.
+  useEffect(() => {
+    const blockContext = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("input, textarea, [contenteditable='true'], [data-allow-context]")) return;
+      event.preventDefault();
+    };
+    const blockDrag = (event: DragEvent) => {
+      if ((event.target as HTMLElement | null)?.tagName === "IMG") event.preventDefault();
+    };
+    document.addEventListener("contextmenu", blockContext);
+    document.addEventListener("dragstart", blockDrag);
+    return () => {
+      document.removeEventListener("contextmenu", blockContext);
+      document.removeEventListener("dragstart", blockDrag);
+    };
+  }, []);
+
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col">
