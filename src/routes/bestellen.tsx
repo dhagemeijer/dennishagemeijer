@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { clearBasket, removeFromBasket, useBasket } from "@/lib/basket";
+import { ProtectedPhoto } from "@/components/site/ProtectedPhoto";
 import { photoUrl } from "@/lib/photo";
 import { formatEuro, nextTierHint, savingsCents, totalCents, unitCents } from "@/lib/pricing";
 import { createOrder } from "@/lib/orders.functions";
@@ -118,11 +119,12 @@ function BasketPage() {
                   className="flex items-center gap-4 rounded-xl border border-border bg-card p-4"
                 >
                   {src ? (
-                    <img
+                    <ProtectedPhoto
                       src={src}
                       alt={item.title || "Foto"}
-                      loading="lazy"
-                      className="size-16 shrink-0 object-cover"
+                      watermark="none"
+                      wrapperClassName="size-16 shrink-0"
+                      className="size-16 object-cover"
                     />
                   ) : null}
                   <span className="flex-1 text-sm">{item.title || "Zonder titel"}</span>

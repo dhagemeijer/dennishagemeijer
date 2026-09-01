@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { PageHeader } from "@/components/site/PageHeader";
 import { collectionsQuery, collectionCountsQuery } from "@/lib/queries";
+import { ProtectedPhoto } from "@/components/site/ProtectedPhoto";
 import { photoUrl } from "@/lib/photo";
 import { SiteSearch } from "@/components/site/SiteSearch";
 
@@ -76,10 +77,10 @@ function CollectionsPage() {
                 >
                   <div className="relative aspect-[4/5] overflow-hidden bg-card">
                     {cover ? (
-                      <img
+                      <ProtectedPhoto
                         src={cover}
                         alt={collection.name}
-                        loading="lazy"
+                        wrapperClassName="size-full"
                         className="size-full object-cover opacity-90 transition-all duration-[350ms] ease-out group-hover:scale-[1.02] group-hover:opacity-100"
                       />
                     ) : (

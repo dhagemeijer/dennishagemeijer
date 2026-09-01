@@ -10,6 +10,7 @@ import {
   subcollectionPhotoCountsQuery,
   subcollectionsQuery,
 } from "@/lib/queries";
+import { ProtectedPhoto } from "@/components/site/ProtectedPhoto";
 import { photoUrl, formatDateNl } from "@/lib/photo";
 
 export const Route = createFileRoute("/collecties/$slug/")({
@@ -99,10 +100,10 @@ function CollectionDetail() {
                   >
                     <div className="relative aspect-[4/3] overflow-hidden bg-card">
                       {cover ? (
-                        <img
+                        <ProtectedPhoto
                           src={cover}
                           alt={sub.name}
-                          loading="lazy"
+                          wrapperClassName="size-full"
                           className="size-full object-cover opacity-90 transition-all duration-[350ms] ease-out group-hover:scale-[1.02] group-hover:opacity-100"
                         />
                       ) : (
