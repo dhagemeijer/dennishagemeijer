@@ -49,23 +49,14 @@ export function ProtectedPhoto({
         />
       ) : null}
 
-      {watermark === "full" ? (
-        <>
-          <img
-            src={watermarkSrc}
-            alt=""
-            aria-hidden="true"
-            draggable={false}
-            className="pointer-events-none absolute inset-0 m-auto w-1/2 max-w-[420px] opacity-25"
-          />
-          <img
-            src={watermarkSrc}
-            alt=""
-            aria-hidden="true"
-            draggable={false}
-            className="pointer-events-none absolute bottom-5 left-1/2 w-[30%] max-w-[240px] -translate-x-1/2 opacity-85 drop-shadow-[0_1px_6px_rgba(0,0,0,0.65)]"
-          />
-        </>
+{watermark === "full" ? (
+        <img
+          src={watermarkSrc}
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          className="pointer-events-none absolute inset-0 m-auto w-1/2 max-w-[420px] opacity-25"
+        />
       ) : null}
 
       {/* Transparent shield: intercepts right-click / long-press on the image. */}
