@@ -7,6 +7,7 @@ import wordmark from "@/assets/wordmark.png";
 import { Button } from "@/components/ui/button";
 import { newsQuery, recentPhotosQuery, collectionsQuery } from "@/lib/queries";
 import { SiteSearch } from "@/components/site/SiteSearch";
+import { ProtectedPhoto } from "@/components/site/ProtectedPhoto";
 import { photoUrl, formatDateNl } from "@/lib/photo";
 
 export const Route = createFileRoute("/")({
@@ -113,10 +114,10 @@ function Home() {
                 >
                   <div className="relative aspect-[4/5] overflow-hidden bg-card">
                     {cover ? (
-                      <img
+                      <ProtectedPhoto
                         src={cover}
                         alt={collection.name}
-                        loading="lazy"
+                        wrapperClassName="size-full"
                         className="size-full object-cover opacity-90 transition-all duration-[350ms] ease-out group-hover:scale-[1.02] group-hover:opacity-100"
                       />
                     ) : null}
@@ -143,10 +144,10 @@ function Home() {
           <div className="mt-10 grid grid-cols-2 gap-2 md:grid-cols-4">
             {photos.slice(0, 4).map((photo) => (
               <figure key={photo.id} className="relative aspect-square overflow-hidden bg-card">
-                <img
+                <ProtectedPhoto
                   src={photoUrl(photo.storage_path) ?? ""}
                   alt={photo.title || "Foto"}
-                  loading="lazy"
+                  wrapperClassName="size-full"
                   className="size-full object-cover opacity-90 transition-all duration-[350ms] ease-out hover:scale-[1.02] hover:opacity-100"
                 />
               </figure>

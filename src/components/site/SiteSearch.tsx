@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Search, X } from "lucide-react";
 
+import { ProtectedPhoto } from "@/components/site/ProtectedPhoto";
 import { searchIndexQuery } from "@/lib/queries";
 import { searchAll, type SearchResult } from "@/lib/search";
 
@@ -11,10 +12,11 @@ function ResultBody({ result }: { result: SearchResult }) {
     <>
       <div className="size-16 shrink-0 overflow-hidden bg-card">
         {result.thumb ? (
-          <img
+          <ProtectedPhoto
             src={result.thumb}
             alt=""
-            loading="lazy"
+            watermark="none"
+            wrapperClassName="size-full"
             className="size-full object-cover opacity-90 transition-opacity duration-300 group-hover:opacity-100"
           />
         ) : null}
