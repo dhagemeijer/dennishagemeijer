@@ -8,11 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { photoUrl } from "@/lib/photo";
 import {
+  collectionByIdQuery,
   collectionPhotosQuery,
   searchIndexQuery,
+  subcollectionByIdQuery,
   subcollectionPhotosQuery,
   type Photo,
 } from "@/lib/queries";
+
 import {
   Dialog,
   DialogContent,
