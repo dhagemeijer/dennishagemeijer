@@ -117,22 +117,38 @@ export function PhotoManager({ target }: { target: Target }) {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const parentQuery = target.subcollectionId
+    ? subcollectionByIdQuery(target.subcollectionId)
+    : collectionByIdQuery(target.collectionId);
+  const { data: parent } = useQuery(parentQuery);
+  const currentCover = parent?.cover_photo_url ?? null;
+
   const setCover = useMutation({
     mutationFn: async (photo: Photo) => {
-      const table = target.subcollectionId ? "subcollections" : "collections";
       const id = target.subcollectionId ?? target.collectionId;
-      const { error } = await supabase
-        .from(table)
-        .update({ cover_photo_url: photo.storage_path })
-        .eq("id", id);
+      const { data, error } = target.subcollectionId
+        ? await supabase
+            .from("subcollections")
+            .update({ cover_photo_url: photo.storage_path })
+            .eq("id", id)
+            .select("id")
+        : await supabase
+            .from("collections")
+            .update({ cover_photo_url: photo.storage_path })
+            .eq("id", id)
+            .select("id");
       if (error) throw new Error(error.message);
+      if (!data || data.length === 0) {
+        throw new Error("Omslagfoto niet opgeslagen — geen beheerrechten of item bestaat niet.");
+      }
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Omslagfoto ingesteld");
-      void queryClient.invalidateQueries();
+      await queryClient.invalidateQueries({ refetchType: "all" });
     },
     onError: (error: Error) => toast.error(error.message),
   });
+
 
   const renamePhoto = useMutation({
     mutationFn: async ({ id, title }: { id: string; title: string }) => {
