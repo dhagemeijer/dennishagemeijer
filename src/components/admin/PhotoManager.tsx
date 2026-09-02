@@ -263,12 +263,15 @@ export function PhotoManager({ target }: { target: Target }) {
                   </Button>
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant={currentCover === photo.storage_path ? "default" : "outline"}
                     onClick={() => setCover.mutate(photo)}
+                    disabled={setCover.isPending}
                     title="Gebruik als omslagfoto"
                   >
-                    <ImageIcon className="mr-1 size-4" /> Omslag
+                    <ImageIcon className="mr-1 size-4" />
+                    {currentCover === photo.storage_path ? "Omslag ✓" : "Omslag"}
                   </Button>
+
                   <Button
                     size="icon"
                     variant="outline"
