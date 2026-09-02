@@ -120,11 +120,18 @@ export function PhotoManager({ target }: { target: Target }) {
     onError: (error: Error) => toast.error(error.message),
   });
 
-  const parentQuery = target.subcollectionId
-    ? subcollectionByIdQuery(target.subcollectionId)
-    : collectionByIdQuery(target.collectionId);
-  const { data: parent } = useQuery(parentQuery);
-  const currentCover = parent?.cover_photo_url ?? null;
+  const subParent = useQuery({
+    ...subcollectionByIdQuery(target.subcollectionId ?? ""),
+    enabled: Boolean(target.subcollectionId),
+  });
+  const collectionParent = useQuery({
+    ...collectionByIdQuery(target.collectionId),
+    enabled: !target.subcollectionId,
+  });
+  const currentCover =
+    (target.subcollectionId ? subParent.data?.cover_photo_url : collectionParent.data?.cover_photo_url) ??
+    null;
+
 
   const setCover = useMutation({
     mutationFn: async (photo: Photo) => {
